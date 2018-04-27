@@ -1,6 +1,9 @@
 package LeetCode.Topics;
 
+import java.io.FileOutputStream;
 import java.util.*;
+import java.util.LinkedList;
+
 public class Array {
     public static void main (String[] args) {
         HashMap<Integer, Integer> map = new HashMap<>();
@@ -9,7 +12,76 @@ public class Array {
         System.out.println(map);
     }
 
+    /* 27. Remove Element */
+    public int removeElement(int[] nums, int val) {
+        int savePos = 0, len = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            if (nums[i] != val) {
+                nums[savePos] = nums[i];
+                savePos++;
+            }
+            else    len--;
+        }
+        for (int i = len; i < nums.length; i++) nums[i] = 0;
+        return len;
+    }
+
+    /* 229. Majority Element II */
+    public List<Integer> majorityElementII(int[] nums) {
+        List<Integer> list = new LinkedList<>();
+        if (nums == null || nums.length == 0)   return list;
+        Arrays.sort(nums);
+        int n = nums.length;
+        for (int i = 0; i < nums.length; i++) {
+            int temp = nums[i];
+            if (i + n/3 < n && nums[i + n/3] == temp) {
+                list.add(temp);
+                i += n/3;
+            }
+            while (i + 1 < n && nums[i + 1] == temp)    i++;
+        }
+        return list;
+    }
+
+    /* 169. Majority Element */
+    public int majorityElement(int[] nums) {
+        if (nums.length == 0)  return -1;
+        int num = nums[0], count = 1;
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] == num) count++;
+            else {
+                count --;
+                if (count == 0) {
+                    num = nums[i];
+                    count = 1;
+                }
+            }
+        }
+        return num;
+    }
+
+    /* 122. Best Time to Buy and Sell Stock II */
+    public int maxProfit122(int[] prices) {
+        if (prices.length <= 1) return 0;
+        int min = prices[0], profit = 0;
+        for (int i = 1; i < prices.length; i++) {
+            if (prices[i] < prices[i - 1]) min = prices[i];
+            profit += prices[i] - min;
+            min = prices[i];
+        }
+        return profit;
+    }
+
     /* 121. Best Time to Buy and Sell Stock */
+    public int maxProfit(int[] prices) {
+        if (prices.length == 0 || prices == null)   return 0;
+        int min = prices[0], max = 0;
+        for (int i = 1; i < prices.length; i++) {
+            min = Math.min(min, prices[i]);
+            max = Math.max(max, prices[i] - min);
+        }
+        return max;
+    }
 
     /* 674. Longest Continuous Increasing Subsequence */
     public int findLengthOfLCIS(int[] nums) {
