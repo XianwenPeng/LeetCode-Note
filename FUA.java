@@ -592,4 +592,63 @@ public class FUA {
         int[] temp = {i, j};
         stack.push(temp);
     }
+
+    /* 给一堆k维坐标，和一个k维坐标，然后需要从这堆k维坐标找到距离这个k维坐标最近的n个k维坐标, k << n。 很绕？给个例子，
+    输入：[[1,0],[2,0],[3,0],[4,0]], [-1,0], n = 2, 输出[[1,0],[2,0]]。这里需要用到求距离那个公式，但是不需要开根号，
+    根号里面的东西直接比较就好，开了的话你就得用到double(Python的话当我没说）。最初给的解法是用个minHeap，里面存的是坐标+距离的Pair，
+    根据距离来排序，最后输出前n个坐标就好。问有没有办法优化？有，用个maxHeap，里面最多只存n个Pair，如果满了，
+    新来一个Pair就和top进行比较，距离比top还大的话直接扔掉，否则的话把top扔掉，加入堆。这里的时间复杂度是O(N*(k + lgn))，
+    比之前的O(N*(k + lgN))要优。 */
+
+
+    /* 353. Design Snake Game */
+    class SnakeGame {
+        LinkedList<Integer> body;
+        Queue<Integer> foods;
+        int curRow, curCol;
+        int height, width;
+
+        /** Initialize your data structure here.
+         @param width - screen width
+         @param height - screen height
+         @param food - A list of food positions
+         E.g food = [[1,1], [1,0]] means the first food is positioned at [1,1], the second is at [1,0]. */
+        public SnakeGame(int width, int height, int[][] food) {
+            body = new LinkedList<>();
+            foods = new LinkedList<>();
+            for (int[] temp: food) {
+                foods.add(temp[0] * width + temp[1]);
+            }
+            body.add(0);
+            curRow = 0;
+            curCol = 0;
+            this.height = height;
+            this.width = width;
+        }
+
+        /** Moves the snake.
+         @param direction - 'U' = Up, 'L' = Left, 'R' = Right, 'D' = Down
+         @return The game's score after the move. Return -1 if game over.
+         Game over when snake crosses the screen boundary or bites its body. */
+        public int move(String direction) {
+            int row = curRow, col = curCol;
+            for (int i = 0; i < direction.length(); i++) {
+                if (direction.charAt(i) == 'U')     row--;
+                else if (direction.charAt(i) == 'D')    row++;
+                else if (direction.charAt(i) == 'L')    col--;
+                else if (direction.charAt(i) == 'R')    col++;
+
+                if (row < 0 || row >= height || col < 0 || col >= width)    return -1;
+                int hash = row * width + col;
+                if (!foods.isEmpty() && foods.peek() == hash)   foods.poll();
+                else    body.removeLast();
+                if (body.contains(hash))    return -1;
+                body.addFirst(hash);
+                curRow = row;
+                curCol = col;
+            }
+            return body.size() - 1;
+        }
+    }
+
 }
