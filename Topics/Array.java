@@ -10,6 +10,181 @@ public class Array {
         map.put(1,1);
         map.put(1,2);
         System.out.println(map);
+
+        Array ar = new Array();
+        /* 280. Wiggle Sort */
+        int[] temp280 = {3, 5, 2, 1, 6, 4};
+        ar.wiggleSort(temp280);
+        System.out.println(Arrays.toString(temp280));
+    }
+
+    /* 59. Spiral Matrix II */
+    public int[][] generateMatrix(int n) {
+        if (n == 1) return new int[][] {{1}};
+        int[][] mat = new int[n][n];
+        int left = 0, right = n - 1, top = 0, bottom = n - 1;
+        int r = 0, c = 0;
+        String move = "right";
+        for (int i = 1; i <= n * n; i++) {
+            mat[r][c] = i;
+            if (c == right && move.equals("right")) {
+                move = "down";
+                top++;
+            }
+            else if (c == left && move.equals("left")) {
+                move = "up";
+                bottom--;
+            }
+            else if (r == top && move.equals("up")) {
+                move = "right";
+                left++;
+            }
+            else if (r == bottom && move.equals("down")){
+                move = "left";
+                right--;
+            }
+            switch (move) {
+                case "right":
+                    c++;
+                    break;
+                case "left":
+                    c--;
+                    break;
+                case "up":
+                    r--;
+                    break;
+                case "down":
+                    r++;
+                    break;
+            }
+        }
+        return mat;
+    }
+
+    /* 54. Spiral Matrix */
+    /*
+    [1, 2, 3, 4],
+    [5, 6, 7, 8],
+    [9,10,11,12],
+    [13,14,15,16],
+    [17,18,19,20]
+
+    [0,1,2,3],
+    [13,14,15,4],
+    [12,19,16,5],
+    [11,18,17,6],
+    [10,9,8,7]
+
+    [1,2,3,4,8, - 12,16,20,19,18, - 17,13,9,5,6, - 7,11,15,14,10]
+     */
+    public List<Integer> spiralOrder(int[][] matrix) {
+        List<Integer> list = new LinkedList<>();
+        if (matrix == null || matrix.length == 0)   return list;
+        int r = 0, c = 0;
+        int left = 0, right = matrix[0].length - 1, top = 0, bottom = matrix.length - 1;
+        String move = "right";
+        for (int i = 0; i < matrix[0].length * matrix.length; i++) {
+            list.add(matrix[r][c]);
+            if (c == right && move.equals("right")) {
+                move = "down";
+                top++;
+            }
+            else if (c == left && move.equals("left")) {
+                move = "up";
+                bottom--;
+            }
+            else if (r == top && move.equals("up")) {
+                move = "right";
+                left++;
+            }
+            else if (r == bottom && move.equals("down")) {
+                move = "left";
+                right--;
+            }
+            switch (move) {
+                case "left":
+                    c--;
+                    break;
+                case "right":
+                    c++;
+                    break;
+                case "up":
+                    r--;
+                    break;
+                case "down":
+                    r++;
+                    break;
+            }
+        }
+        return list;
+    }
+
+    /* 16. 3Sum Closest */
+    public int threeSumClosest(int[] nums, int target) {
+        Arrays.sort(nums);
+        int closest = nums[0] + nums[1] + nums[2];
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0 && nums[i - 1] == nums[i])    continue;
+            int low = i + 1, high = nums.length - 1;
+            while (low < high) {
+                int sum = nums[low] + nums[high] + nums[i];
+                closest = Math.abs(sum - target) > Math.abs(closest - target) ? closest: sum;
+                if (sum == target)   return target;
+                else if (sum > target)  high--;
+                else    low++;
+            }
+        }
+        return closest;
+    }
+
+    /* 324. Wiggle Sort II */
+    public void wiggleSortII(int[] nums) {
+//        for (int i = 0; i < nums.length; i++) {
+//            if (i % 2 == 1 && nums[i] )
+//        }
+    }
+
+    /* 280. Wiggle Sort */
+    public void wiggleSort(int[] nums) {
+        for (int i = 1; i < nums.length; i++) {
+            if (i % 2 == 1 && nums[i] < nums[i - 1]) {
+                int temp = nums[i];
+                nums[i] = nums[i - 1];
+                nums[i - 1] = temp;
+            }
+            else if ((i != 0 && i % 2 == 0) && (nums[i - 1] < nums[i])) {
+                int temp = nums[i];
+                nums[i] = nums[i - 1];
+                nums[i - 1] = temp;
+            }
+        }
+    }
+
+    /* 289. Game of Life */
+    public void gameOfLife(int[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                int[] temp = new int[2];
+                gameOfLifeHelper(board, temp, i, j);
+                if (board[i][j] == 1 && (temp[1] == 2 || temp[1] == 3)) board[i][j] = 3;
+                else if (board[i][j] == 0 && temp[1] == 3)  board[i][j] = 2;
+            }
+        }
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++){
+                board[i][j] >>= 1;
+            }
+        }
+    }
+    public void gameOfLifeHelper(int[][] board, int[] temp, int i, int j) {
+        for (int row = -1; row < 2; row++) {
+            for (int col = -1; col < 2; col++) {
+                if (i + row >= 0 && i + row < board.length && j + col >= 0 && j + col < board[0].length
+                        && !(row == 0 && col == 0)) {
+                    if ((board[i + row][j + col] & 1) == 1)    temp[1]++;
+                }
+            }
+        }
     }
 
     /* 27. Remove Element */
