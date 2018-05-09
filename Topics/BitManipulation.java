@@ -21,6 +21,34 @@ public class BitManipulation {
 
     /* 137. Single Number II */
     public int singleNumberII(int[] nums) {
+        int ans = 0;
+        for (int i = 0; i < 32; i++) {
+            int sum = 0;
+            for (int j = 0; j < nums.length; j++) {
+                if (((nums[j] >> i) & 1) == 1) {
+                    sum ++;
+                    sum %= 3;
+                }
+            }
+            if (sum != 0) {
+                ans |= sum << i;
+            }
+        }
+        return ans;
+    }
 
+    /* 260. Single Number III */
+    public int[] singleNumberIII(int[] nums) {
+        int bit = 0;
+        for (int i : nums) {
+            bit ^= i;
+        }
+        bit &= -bit;
+        int[] ans = new int[2];
+        for (int i : nums) {
+            if ((i & bit) == 0)   ans[0] ^= i;
+            else    ans[1] ^= i;
+        }
+        return ans;
     }
 }

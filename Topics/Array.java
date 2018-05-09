@@ -16,6 +16,76 @@ public class Array {
         int[] temp280 = {3, 5, 2, 1, 6, 4};
         ar.wiggleSort(temp280);
         System.out.println(Arrays.toString(temp280));
+
+        /* 228. Summary Ranges */
+        int[] temp228 = {0,1,2,4,5,7};
+        System.out.println(ar.summaryRanges(temp228));
+    }
+
+    /* 62. Unique Paths */
+    public int uniquePaths(int m, int n) {
+        int[][] dp = new int[n][m];
+        Arrays.fill(dp[0], 1);
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (j == 0) dp[i][j] = dp[i - 1][j] + 1;
+                else    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[n - 1][m - 1];
+    }
+
+    /* 120. Triangle */
+    public int minimumTotal(List<List<Integer>> triangle) {
+        if (triangle == null)   return 0;
+        int len = triangle.size();
+        int[] dp = new int[triangle.get(len - 1).size()];
+        for (int i = 0; i < dp.length; i++) {
+            dp[i] = triangle.get(len - 1).get(i);
+        }
+        for (int i = len - 2; i >= 0; i--) {
+            List<Integer> list = triangle.get(i);
+            for (int j = 0; j < list.size(); j++) {
+                dp[j] = list.get(j) + Math.min(dp[j], dp[j + 1]);
+            }
+        }
+        return dp[0];
+    }
+
+    /* 228. Summary Ranges */
+    public List<String> summaryRanges(int[] nums) {
+        List<String> list = new LinkedList<>();
+        if (nums == null || nums.length == 0)   return list;
+        StringBuilder sb = new StringBuilder();
+        int next = nums[0];
+        sb.append(next);
+        for (int i = 0; i < nums.length; i++) {
+            if (next == nums[i]) {
+                next++;
+                if (i != 0 && i == nums.length - 1)   sb.append("->" + nums[i]);
+            }
+            else {
+                next = nums[i] + 1;
+                if (!String.valueOf(nums[i - 1]).equals(sb.toString()) )
+                    sb.append("->"+nums[i - 1]);
+                list.add(sb.toString());
+                sb = new StringBuilder();
+                sb.append(nums[i]);
+            }
+        }
+        list.add(sb.toString());
+        return list;
+    }
+    public List<String> summaryRangesInnerWhile(int[] nums) {
+        List<String> list = new LinkedList<>();
+        if (nums == null || nums.length == 0)   return list;
+        for (int i = 0; i < nums.length; i++) {
+            int start = i;
+            while (i + 1 < nums.length && nums[i + 1] == nums[i] + 1)   i++;
+            if (start != i)     list.add(nums[start] + "->" + nums[i]);
+            else    list.add(String.valueOf(nums[start]));
+        }
+        return list;
     }
 
     /* 59. Spiral Matrix II */
