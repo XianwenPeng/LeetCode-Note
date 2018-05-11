@@ -27,6 +27,66 @@ public class Backtracking {
         System.out.println(bt.numberOfPatterns(1,2));
     }
 
+    /* 77. Combinations */
+    public List<List<Integer>> combine(int n, int k) {
+        List<List<Integer>> res = new LinkedList<>();
+        combineHelper(res, new LinkedList<>(), n, k, 0);
+        return res;
+    }
+    public void combineHelper(List<List<Integer>> res, List<Integer> list, int n, int k, int start) {
+        if (list.size() == k) {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = start; i <= n; i++) {
+            list.add(i);
+            combineHelper(res, list, n, k, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+
+    /* 40. Combination Sum II */
+    public List<List<Integer>> combinationSum2(int[] candidates, int target) {
+        List<List<Integer>> res = new LinkedList<>();
+        Arrays.sort(candidates);
+        combinationSum2Helper(res, new LinkedList<>(), 0, candidates, target, 0);
+        return res;
+    }
+    public void combinationSum2Helper(List<List<Integer>> res, List<Integer> list, int curSum,
+                                      int[] candidates, int target, int start) {
+        if (curSum > target)    return;
+        if (curSum == target)   {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            if (i > start && candidates[i] == candidates[i - 1])    continue;
+            list.add(candidates[i]);
+            combinationSum2Helper(res, list, curSum + candidates[i], candidates, target, i + 1);
+            list.remove(list.size() - 1);
+        }
+    }
+
+    /* 39. Combination Sum */
+    public List<List<Integer>> combinationSum(int[] candidates, int target) {
+        List<List<Integer>> list = new LinkedList<>();
+        combinationSumHelper(list, new LinkedList<>(), 0, candidates, target, 0);
+        return list;
+    }
+    public void combinationSumHelper(List<List<Integer>> res, List<Integer> list,
+                                     int curSum, int[] candidates, int target, int start) {
+        if (curSum > target)    return;
+        if (curSum == target)   {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = start; i < candidates.length; i++) {
+            list.add(candidates[i]);
+            combinationSumHelper(res, list, curSum + candidates[i], candidates, target, i);
+            list.remove(list.size() - 1);
+        }
+    }
+
     /* 351. Android Unlock Patterns */
     public int numberOfPatterns(int m, int n) {
         if (m > n)  return 0;

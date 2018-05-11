@@ -1,5 +1,6 @@
 package LeetCode.Topics;
 
+import java.util.*;
 public class LinkedList {
     public class ListNode {
         int val;
@@ -20,6 +21,31 @@ public class LinkedList {
         int[] arr82 = {1,1,1,2,3,3,4,5,5,6,7};
         ListNode head82 = ll.deleteDuplicates2Pointers(ll.buildList(arr82));
         ll.printList(head82);
+    }
+
+    /* 445. Add Two Numbers II */
+    public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
+        Stack<ListNode> stack1 = new Stack<>();
+        Stack<ListNode> stack2 = new Stack<>();
+        while (l1 != null) {
+            stack1.push(l1);
+            l1 = l1.next;
+        }
+        while (l2 != null) {
+            stack2.push(l2);
+            l2 = l2.next;
+        }
+        ListNode ans = new ListNode(0), prev = ans;
+        int carry = 0;
+        while (!stack1.isEmpty() || !stack2.isEmpty() || carry == 1) {
+            int x = stack1.isEmpty() ? 0 : stack1.pop().val;
+            int y = stack2.isEmpty() ? 0 : stack2.pop().val;
+            ListNode node = new ListNode((x + y + carry) % 10);
+            node.next = ans.next;
+            ans.next = node;
+            carry = (x + y + carry) / 10;
+        }
+        return ans.next;
     }
 
     /* 142. Linked List Cycle II */

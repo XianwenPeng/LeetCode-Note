@@ -22,13 +22,29 @@ public class Array {
         System.out.println(ar.summaryRanges(temp228));
     }
 
+
+    /* 63. Unique Paths II */
+    public int uniquePathsWithObstacles(int[][] obstacleGrid) {
+        if (obstacleGrid[0][0] == 1)    return 0;
+        int m = obstacleGrid.length, n = obstacleGrid[0].length;
+        int[][] dp = new int[m + 1][n + 1];
+        dp[1][0] = 1;
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1;  j <= n; j++) {
+                if (obstacleGrid[i - 1][j - 1] == 1)    continue;
+                dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
+            }
+        }
+        return dp[m][n];
+    }
+
     /* 62. Unique Paths */
     public int uniquePaths(int m, int n) {
         int[][] dp = new int[n][m];
         Arrays.fill(dp[0], 1);
         for (int i = 1; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (j == 0) dp[i][j] = dp[i - 1][j] + 1;
+                if (j == 0) dp[i][j] = 1;
                 else    dp[i][j] = dp[i - 1][j] + dp[i][j - 1];
             }
         }
