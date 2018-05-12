@@ -28,6 +28,22 @@ public class DFS {
         dfs.printList(node108);
     }
 
+    /* 114. Flatten Binary Tree to Linked List */
+    public void flatten(TreeNode root) {
+        if (root == null)   return;
+        TreeNode left = root.left;
+        TreeNode right = root.right;
+        root.left = null;
+        flatten(left);
+        flatten(right);
+        root.right = left;
+        TreeNode cur = root;
+        while (cur.right != null) {
+            cur = cur.right;
+        }
+        cur.right = right;
+    }
+
     /* 695. Max Area of Island */
     public int maxAreaOfIsland(int[][] grid) {
         if (grid == null || grid.length == 0)   return 0;

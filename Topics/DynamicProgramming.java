@@ -54,6 +54,42 @@ public class DynamicProgramming {
 
     }
 
+    /* 115. Distinct Subsequences */
+    public int numDistinct(String s, String t) {
+        int[] dp = new int[t.length() + 1];
+        dp[0] = 1;
+        HashMap<Character, List<Integer>> map = new HashMap<>();
+        for (int i = 0; i < t.length(); i++) {
+            if (!map.containsKey(t.charAt(i))) map.put(t.charAt(i), new LinkedList<>());
+            map.get(t.charAt(i)).add(i + 1);
+        }
+        for (int i = 0; i < s.length(); i++) {
+            List<Integer> list = map.get(s.charAt(i));
+            if (list == null)   continue;
+            List<Integer> add = new LinkedList<>();
+            for (int j : list) {
+                add.add(dp[j - 1]);
+            }
+            for (int j = 0; j < list.size(); j++) {
+                dp[list.get(j)] += add.get(j);
+            }
+        }
+        return dp[t.length()];
+    }
+
+    public int numDistinct2(String s, String t) {
+        int[] dp = new int[t.length() + 1];
+        dp[0] = 1;
+        for (int i = 1; i <= s.length(); i++) {
+            for (int j = t.length(); j >= 1; j--) {
+                if (s.charAt(i - 1) == t.charAt(j - 1)) {
+                    dp[j] += dp[j - 1];
+                }
+            }
+        }
+        return dp[t.length()];
+    }
+
     /* 714. Best Time to Buy and Sell Stock with Transaction Fee */
     public int maxProfit(int[] prices, int fee) {
         if (prices.length <= 1) return 0;

@@ -22,6 +22,45 @@ public class Array {
         System.out.println(ar.summaryRanges(temp228));
     }
 
+    /* 41. First Missing Positive */
+    public int firstMissingPositive(int[] nums) {
+        int max = nums.length + 1, min = 1;
+        for (int i: nums) {
+            if (i > 0 && i < nums.length) {
+                nums[i] = 0 - nums[i];
+            }
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (i > 0)  return i + 1;
+        }
+        return nums.length + 1;
+    }
+
+    /* 18. 4Sum */
+    public List<List<Integer>> fourSum(int[] nums, int target) {
+        List<List<Integer>> res = new LinkedList<>();
+        if (nums == null || nums.length < 4)   return res;
+        Arrays.sort(nums);
+        for (int i = 0; i < nums.length - 3; i++) {
+            if (i > 0 && nums[i] == nums[i - 1])  continue;
+            for (int j = i + 1; j < nums.length - 2; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1])  continue;
+                int left = j + 1, right = nums.length - 1;
+                while (left < right) {
+                    if (nums[i] + nums[j] + nums[left] + nums[right] == target) {
+                        res.add(Arrays.asList(nums[i], nums[j], nums[left], nums[right]));
+                        while (left < right && nums[right] == nums[right - 1])  right--;
+                        while (left < right && nums[left] == nums[left + 1])    left++;
+                        right--;
+                        left++;
+                    }
+                    else if (nums[i] + nums[j] + nums[left] + nums[right] > target) right--;
+                    else    left++;
+                }
+            }
+        }
+        return res;
+    }
 
     /* 63. Unique Paths II */
     public int uniquePathsWithObstacles(int[][] obstacleGrid) {

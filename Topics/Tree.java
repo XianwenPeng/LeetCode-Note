@@ -20,6 +20,41 @@ public class Tree {
         tr.missingNumber(num268);
     }
 
+    /* 106. Construct Binary Tree from Inorder and Postorder Traversal */
+    public TreeNode buildTreeWithInorderAndPostorder(int[] inorder, int[] postorder) {
+        return buildTreeWithInorderAndPostorderHelper(postorder.length - 1, 0, inorder.length - 1, inorder, postorder);
+    }
+    public TreeNode buildTreeWithInorderAndPostorderHelper(int postStart, int inStart, int inEnd,
+                                                           int[] inorder, int[] postorder) {
+        if (postStart > postorder.length || inStart > inEnd)    return null;
+        TreeNode root = new TreeNode(postorder[postStart]);
+        int rootIndex = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) rootIndex = i;
+        }
+        root.left = buildTreeWithInorderAndPostorderHelper(postStart + rootIndex - inEnd - 1, inStart,
+                rootIndex - 1, inorder, postorder);
+        root.right = buildTreeWithInorderAndPostorderHelper(postStart - 1, rootIndex + 1, inEnd,
+                inorder, postorder);
+        return root;
+    }
+
+    /* 105. Construct Binary Tree from Preorder and Inorder Traversal */
+    public TreeNode buildTree(int[] preorder, int[] inorder) {
+        return buildTreeHelper(0, 0, inorder.length - 1, preorder, inorder);
+    }
+    public TreeNode buildTreeHelper(int preStart, int inStart, int inEnd, int[] preorder, int[] inorder) {
+        if (preStart > preorder.length || inStart > inEnd)  return null;
+        TreeNode root = new TreeNode(preorder[preStart]);
+        int rootIndex = 0;
+        for (int i = inStart; i <= inEnd; i++) {
+            if (inorder[i] == root.val) rootIndex = i;
+        }
+        root.left = buildTreeHelper(preStart + 1, inStart, rootIndex - 1, preorder, inorder);
+        root.right = buildTreeHelper(preStart + rootIndex - inStart + 1, rootIndex + 1, inEnd, preorder, inorder);
+        return root;
+    }
+
     /* 572. Subtree of Another Tree */
     public boolean isSubtree(TreeNode s, TreeNode t) {
         if (s == null)  return false;
