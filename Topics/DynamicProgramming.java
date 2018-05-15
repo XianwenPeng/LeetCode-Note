@@ -54,6 +54,31 @@ public class DynamicProgramming {
 
     }
 
+    /* 72. Edit Distance */
+    public int minDistance(String word1, String word2) {
+        if (word1 == null && word2 == null) return 0;
+        if (word1.length() == 0)    return word2.length();
+        if (word2.length() == 0)    return word1.length();
+        int m = word1.length(), n = word2.length();
+        int[] dp = new int[n + 1];
+        for (int i = 0; i <= m; i++) {
+            int[] temp = new int[n + 1];
+            for (int j = 0; j <= n; j++) {
+                if (i == 0) temp[j] = j;
+                else if (j == 0)    temp[j] = i;
+                else {
+                    if (word1.charAt(i - 1) == word2.charAt(j - 1))
+                        temp[j] = dp[j - 1];
+                    else {
+                        temp[j] = Math.min(Math.min(temp[j - 1], dp[j]), dp[j - 1]) + 1;
+                    }
+                }
+            }
+            dp = temp;
+        }
+        return dp[n];
+    }
+
     /* 115. Distinct Subsequences */
     public int numDistinct(String s, String t) {
         int[] dp = new int[t.length() + 1];
