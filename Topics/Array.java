@@ -5,6 +5,13 @@ import java.util.*;
 import java.util.LinkedList;
 
 public class Array {
+    public class Interval {
+        int start;
+        int end;
+        Interval() { start = 0; end = 0; }
+        Interval(int s, int e) { start = s; end = e; }
+    }
+
     public static void main (String[] args) {
         HashMap<Integer, Integer> map = new HashMap<>();
         map.put(1,1);
@@ -20,6 +27,32 @@ public class Array {
         /* 228. Summary Ranges */
         int[] temp228 = {0,1,2,4,5,7};
         System.out.println(ar.summaryRanges(temp228));
+    }
+
+    /* 57. Insert Interval */
+    public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
+        List<Interval> res = new LinkedList<>();
+        for (int i = 0; i < intervals.size(); i++) {
+            Interval cur = intervals.get(i);
+            if (newInterval == null) {
+                res.add(cur);
+                continue;
+            }
+            if (cur.end < newInterval.start) {
+                res.add(cur);
+            }
+            else if (cur.start > newInterval.end) {
+                res.add(newInterval);
+                res.add(cur);
+                newInterval = null;
+            }
+            else {
+                newInterval.start = Math.min(cur.start, newInterval.start);
+                newInterval.end = Math.max(cur.end, newInterval.end);
+            }
+        }
+        if (newInterval != null) res.add(newInterval);
+        return res;
     }
 
     /* 41. First Missing Positive */

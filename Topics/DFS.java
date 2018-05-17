@@ -2,7 +2,7 @@ package LeetCode.Topics;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Map;
+import java.util.*;
 import java.util.Queue;
 
 public class DFS {
@@ -19,6 +19,11 @@ public class DFS {
         ListNode next;
         ListNode(int x) { val = x; }
     }
+    public class TreeLinkNode {
+        int val;
+        TreeLinkNode left, right, next;
+        TreeLinkNode(int x) { val = x; }
+    }
 
     public static void main(String[] args) {
         DFS dfs = new DFS();
@@ -26,6 +31,39 @@ public class DFS {
         int[] arr108 = {-10,-3,-1,0,5,9};
         TreeNode node108 = dfs.sortedArrayToBST(arr108);
         dfs.printList(node108);
+    }
+
+    /* 117. Populating Next Right Pointers in Each Node II */
+    public void connectII(TreeLinkNode root) {
+        if (root == null || (root.left == null && root.right == null))   return;
+        TreeLinkNode last = null;
+        if (root.left != null && root.right != null) {
+            root.left.next = root.right;
+            last = root.right;
+        }
+        else {
+            last = root.left == null ? root.right : root.left;
+        }
+        TreeLinkNode node = root.next;
+        while (node != null) {
+            if (node.left != null || node.right != null) {
+                if (node.left != null)  last.next = node.left;
+                else    last.next = node.right;
+                break;
+            }
+            node = node.next;
+        }
+        connectII(root.right);
+        connectII(root.left);
+    }
+
+    /* 116. Populating Next Right Pointers in Each Node */
+    public void connect(TreeLinkNode root) {
+        if (root == null || root.left == null || root.right == null)   return;
+        root.left.next = root.right;
+        if (root.next != null)  root.right.next = root.next.left;
+        connect(root.right);
+        connect(root.left);
     }
 
     /* 114. Flatten Binary Tree to Linked List */
