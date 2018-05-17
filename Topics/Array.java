@@ -29,6 +29,19 @@ public class Array {
         System.out.println(ar.summaryRanges(temp228));
     }
 
+    /* 45. Jump Game II */
+    public int jump(int[] nums) {
+        int max = 0, count = 0, end = 0;
+        for (int i = 0; i < nums.length - 1; i++) {
+            max = Math.max(i + nums[i], max);
+            if (i == end) {
+                count ++;
+                end = max;
+            }
+        }
+        return count;
+    }
+
     /* 57. Insert Interval */
     public List<Interval> insert(List<Interval> intervals, Interval newInterval) {
         List<Interval> res = new LinkedList<>();

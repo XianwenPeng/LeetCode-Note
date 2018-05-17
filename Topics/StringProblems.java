@@ -8,6 +8,21 @@ public class StringProblems {
         String[] temp14 = {"flower","flow","flight"};
         System.out.println(sp.longestCommonPrefix(temp14));
     }
+
+    /* 58. Length of Last Word */
+    public int lengthOfLastWord(String s) {
+        int len = 0, count = 0;
+        for (int i = 0; i < s.length(); i++) {
+            if (s.charAt(i) == ' ') {
+                len = count > 0 ? count : len;
+                count = 0;
+            }
+            else    count++;
+        }
+        len = count;
+        return count == 0 ? len : count;
+    }
+
     /* 14. Longest Common Prefix */
     public String longestCommonPrefix(String[] strs) {
         if (strs.length < 1)   return "";

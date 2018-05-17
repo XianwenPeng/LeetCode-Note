@@ -52,6 +52,30 @@ public class DynamicProgramming {
         System.out.println(dp.findNumberOfLIS(arr673_2));
 //        System.out.println(dp.findNumberOfLIS(arr673_3));
 
+        /* 97. Interleaving String */
+        String s1 = "dbbca", s2 = "aabcc", s3 = "aadbbcbcac";
+        System.out.println(dp.isInterleave(s1,s2,s3));
+
+    }
+
+    /* 97. Interleaving String */
+    public boolean isInterleave(String s1, String s2, String s3) {
+        if (s1.length() + s2.length() != s3.length())   return false;
+        if (s1 == null) return s2.length() == s3.length();
+        if (s2 == null) return s1.length() == s3.length();
+        int m = s1.length(), n = s2.length();
+        boolean[][] dp = new boolean[m + 1][n + 1];
+        for (int i = 0; i <= m; i++) {
+            for (int j = 0; j <= n; j++) {
+                if (i == 0 && j == 0) {
+                    dp[i][j] = true;
+                    continue;
+                }
+                dp[i][j] = (j > 0 && dp[i][j - 1] && s2.charAt(j - 1) == s3.charAt(i + j - 1))
+                        || (i > 0 && dp[i - 1][j] && s1.charAt(i - 1) == s3.charAt(i + j - 1));
+            }
+        }
+        return dp[m][n];
     }
 
     /* 72. Edit Distance */
