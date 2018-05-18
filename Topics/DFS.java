@@ -57,6 +57,14 @@ public class DFS {
         connectII(root.left);
     }
 
+    /* 111. Minimum Depth of Binary Tree */
+    public int minDepth(TreeNode root) {
+        if (root == null)   return 0;
+        int left = 1 + minDepth(root.left);
+        int right = 1 + minDepth(root.right);
+        return left == 1 || right == 1 ? Math.max(left, right) : Math.min(left, right);
+    }
+
     /* 116. Populating Next Right Pointers in Each Node */
     public void connect(TreeLinkNode root) {
         if (root == null || root.left == null || root.right == null)   return;

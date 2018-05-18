@@ -56,6 +56,65 @@ public class DynamicProgramming {
         String s1 = "dbbca", s2 = "aabcc", s3 = "aadbbcbcac";
         System.out.println(dp.isInterleave(s1,s2,s3));
 
+        /* 32. Longest Valid Parentheses */
+        System.out.println(dp.longestValidParentheses(")())"));
+        System.out.println(dp.longestValidParentheses("()(())"));
+        System.out.println(dp.longestValidParentheses("(()())"));
+
+    }
+
+    /* 64. Minimum Path Sum */
+    public int minPathSum(int[][] grid) {
+        int m = grid.length;
+        if (m == 0)   return 0;
+        int n = grid[0].length;
+        int[][] dp = new int[m + 1][n + 1];
+        dp[0][0] = grid[0][0];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (i == 0 && j == 0)   continue;
+                if (i == 0 && j > 0)    dp[i][j] = grid[i][j] + dp[i][j - 1];
+                else if (j == 0 && i > 0)   dp[i][j] = grid[i][j] + dp[i - 1][j];
+                else dp[i][j] = grid[i][j] + Math.min(dp[i - 1][j], dp[i][j - 1]);
+            }
+        }
+        return dp[m][n];
+    }
+
+    /* 85. Maximal Rectangle */
+    public int maximalRectangle(char[][] matrix) {
+        int m = matrix.length;
+        if (m == 0) return 0;
+        int n = matrix[0].length, max = 0;
+        int[][] dp = new int[m][n];
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                dp[i][j] = -1;
+                if (matrix[i][j] == '0')    continue;
+                dp[i][j] = j;
+                if (j - 1 >= 0 && dp[i][j - 1] >= 0)    dp[i][j] = dp[i][j - 1];
+                int min = j - dp[i][j] + 1;
+                for (int k = i; k >= 0 && matrix[k][j] == '1'; k--) {
+                    min = Math.min(min, j - dp[k][j] + 1);
+                    max = Math.max(max, min * (i - k + 1));
+                }
+            }
+        }
+        return max;
+    }
+
+    /* 32. Longest Valid Parentheses */
+    public int longestValidParentheses(String s) {
+        int[] dp = new int[s.length()];
+        int len = s.length(), max = 0;
+        for (int i = 0; i < len; i++) {
+            if (i > 0 && s.charAt(i) == ')' && i - dp[i - 1] - 1 >= 0 && s.charAt(i - dp[i - 1] - 1) == '(') {
+                dp[i] = dp[i - 1] + 2 + (i - dp[i - 1] - 2 >= 0 ? dp[i - dp[i - 1] - 2] : 0);
+                max = Math.max(max, dp[i]);
+                System.out.println(Arrays.toString(dp));
+            }
+        }
+        return max;
     }
 
     /* 97. Interleaving String */
