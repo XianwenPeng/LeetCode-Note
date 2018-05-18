@@ -27,6 +27,33 @@ public class Backtracking {
         System.out.println(bt.numberOfPatterns(1,2));
     }
 
+    /* 131. Palindrome Partitioning */
+    public List<List<String>> partition(String s) {
+        List<List<String>> list = new LinkedList<>();
+        partitionBacktracking(s, list, new LinkedList<>(), 0);
+        return list;
+    }
+    public void partitionBacktracking(String s, List<List<String>> list, List<String> subList, int start) {
+        if (start >= s.length() && subList.size() > 0) {
+            list.add(new LinkedList<>(subList));
+            return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            if (isPalindrome(s, start, i)) {
+                subList.add(s.substring(start, i + 1));
+                partitionBacktracking(s, list, subList, i + 1);
+                subList.remove(subList.size() - 1);
+            }
+        }
+    }
+    public boolean isPalindrome(String s, int l, int r) {
+        if (l == r) return true;
+        while (l < r) {
+            if (s.charAt(l++) != s.charAt(r--)) return false;
+        }
+        return true;
+    }
+
     /* 77. Combinations */
     public List<List<Integer>> combine(int n, int k) {
         List<List<Integer>> res = new LinkedList<>();

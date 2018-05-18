@@ -23,6 +23,26 @@ public class LinkedList {
         ll.printList(head82);
     }
 
+    /* 86. Partition List */
+    public ListNode partition(ListNode head, int x) {
+        ListNode queue1 = new ListNode(0), queue2 = new ListNode(0);
+        ListNode cur1 = queue1, cur2 = queue2;
+        while (head != null) {
+            if (head.val < x) {
+                cur1.next = head;
+                cur1 = head;
+            }
+            else {
+                cur2.next = head;
+                cur2 = head;
+            }
+            head = head.next;
+        }
+        cur2.next = null;
+        cur1.next = queue2.next;
+        return queue1.next;
+    }
+
     /* 445. Add Two Numbers II */
     public ListNode addTwoNumbers(ListNode l1, ListNode l2) {
         Stack<ListNode> stack1 = new Stack<>();
