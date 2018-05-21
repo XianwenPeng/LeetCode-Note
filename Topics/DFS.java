@@ -33,6 +33,58 @@ public class DFS {
         dfs.printList(node108);
     }
 
+    /* 99. Recover Binary Search Tree */
+    TreeNode firstNode = null, secondNode = null, preNode = new TreeNode(Integer.MIN_VALUE);
+    public void recoverTree(TreeNode root) {
+        recoverTreeTraversal(root);
+        int temp = firstNode.val;
+        firstNode.val = secondNode.val;
+        secondNode.val = temp;
+    }
+    public void recoverTreeTraversal(TreeNode root) {
+        if (root == null)   return;
+        recoverTreeTraversal(root.left);
+        if (firstNode == null && preNode.val >= root.val)   firstNode = preNode;
+        if (firstNode != null && preNode.val >= root.val)   secondNode = root;
+        preNode = root;
+        recoverTreeTraversal(root.right);
+    }
+    // Stack Iterative
+    public void recoverTreeII(TreeNode root) {
+        Stack<Element> stack = new Stack<>();
+        TreeNode firstNode = null, secondNode = null, preNode = new TreeNode(Integer.MIN_VALUE);
+        stack.push(new Element(root, 0));
+        while (!stack.empty()) {
+            Element cur = stack.pop();
+            if (cur.node == null)   continue;
+            if (cur.type == 0)  {
+                stack.push(new Element(cur.node.right, 0));
+                stack.push(new Element(cur.node, 1));
+                stack.push(new Element(cur.node.left, 0));
+            }
+            else {
+                if (preNode == null)    preNode = cur.node;
+                if (firstNode == null && preNode.val >= cur.node.val)
+                    firstNode = preNode;
+                if (preNode.val >= cur.node.val)
+                    secondNode = cur.node;
+                preNode = cur.node;
+            }
+        }
+        int temp = firstNode.val;
+        firstNode.val = secondNode.val;
+        secondNode.val = temp;
+    }
+    public class Element {
+        int type; // 0 visit, 1 do something
+        TreeNode node;
+        public Element(TreeNode node, int type) {
+            this.node = node;
+            this.type = type;
+        }
+    }
+
+
     /* 117. Populating Next Right Pointers in Each Node II */
     public void connectII(TreeLinkNode root) {
         if (root == null || (root.left == null && root.right == null))   return;

@@ -23,6 +23,20 @@ public class LinkedList {
         ll.printList(head82);
     }
 
+    /* 19. Remove Nth Node From End of List */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode start = new ListNode(0);
+        ListNode slow = start, fast = start;
+        slow.next = head;
+        for (int i = 0; i < n; i++) fast = fast.next;
+        while (fast.next != null) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        slow.next = slow.next.next;
+        return start.next;
+    }
+
     /* 86. Partition List */
     public ListNode partition(ListNode head, int x) {
         ListNode queue1 = new ListNode(0), queue2 = new ListNode(0);
