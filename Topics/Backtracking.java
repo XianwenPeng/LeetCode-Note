@@ -25,6 +25,99 @@ public class Backtracking {
 
         /* 351. Android Unlock Patterns */
         System.out.println(bt.numberOfPatterns(1,2));
+
+        /* 51. N-Queens */
+        System.out.println(bt.solveNQueens(4));
+
+        /* 52. N-Queens II */
+        System.out.println(bt.totalNQueens(4));
+
+        /* 60. Permutation Sequence */
+        System.out.println(bt.getPermutation(3,3));
+
+    }
+
+    /* 60. Permutation Sequence */
+    public String getPermutation(int n, int k) {
+        StringBuilder sb = new StringBuilder();
+        int[] factorial = new int[n + 1];
+        factorial[0] = 1;
+        int sum = 1;
+        List<Integer> numbers = new LinkedList<>();
+        for (int i = 1; i <= n; i++) {
+            sum *= i;
+            factorial[i] = sum;
+            numbers.add(i);
+        }
+        k--;
+        for (int i = 1; i <= n; i++) {
+            int fac = factorial[n - i];
+            int index = k / fac;
+            sb.append(numbers.get(index));
+            k -= index * fac;
+            numbers.remove(index);
+        }
+        return sb.toString();
+    }
+
+    /* 52. N-Queens II */
+    int count = 0;
+    public int totalNQueens(int n) {
+        totalNQueensDFS(n, new boolean[n], new HashSet<>(), new HashSet<>(), 0);
+        return count;
+    }
+    public void totalNQueensDFS(int n, boolean[] visitedCols, Set<Integer> diagL, Set<Integer> diagR, int row) {
+        if (row >= n) {
+            count++;
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (visitedCols[i] || diagL.contains(row - i) || diagR.contains(row + i))   continue;
+            visitedCols[i] = true;
+            diagL.add(row - i);
+            diagR.add(row + i);
+            totalNQueensDFS(n, visitedCols, diagL, diagR, row + 1);
+            visitedCols[i] = false;
+            diagL.remove(row - i);
+            diagR.remove(row + i);
+        }
+    }
+
+    /* 51. N-Queens */
+    public List<List<String>> solveNQueens(int n) {
+        List<List<String>> list = new LinkedList<>();
+        solveQueensBacktracking(n, list, new LinkedList<>(), new boolean[n], new HashSet<>(), new HashSet<>(), 0);
+        return list;
+    }
+    public void solveQueensBacktracking(int n, List<List<String>> list, List<String> temp, boolean[] visitedCols,
+                                        Set<Integer> diagL, Set<Integer> diagR, int row) {
+        if (temp.size() == n) {
+            list.add(new LinkedList<>(temp));
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (visitedCols[i] || diagL.contains(row - i) || diagR.contains(row + i))    continue;
+            visitedCols[i] = true;
+            diagL.add(row - i);
+            diagR.add(row + i);
+            temp.add(generateRes(i, n));
+            solveQueensBacktracking(n, list, temp, visitedCols, diagL, diagR, row + 1);
+            temp.remove(temp.size() - 1);
+            visitedCols[i] = false;
+            diagL.remove(row - i);
+            diagR.remove(row + i);
+        }
+    }
+    public String generateRes (int j, int n) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < j; i++) {
+            sb.append(".");
+        }
+        sb.append("Q");
+        for (int i = j + 1; i < n; i++) {
+            sb.append(".");
+        }
+        return sb.toString();
     }
 
     /* 131. Palindrome Partitioning */

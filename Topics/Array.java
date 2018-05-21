@@ -29,6 +29,18 @@ public class Array {
         System.out.println(ar.summaryRanges(temp228));
     }
 
+    /* 80. Remove Duplicates from Sorted Array II */
+    public int removeDuplicates(int[] nums) {
+        if (nums.length <= 2)    return nums.length;
+        int ans = 2;
+        for (int i = 2; i < nums.length; i++) {
+            if (nums[i] != nums[ans - 1] || nums[i] != nums[ans - 2]) {
+                nums[ans++] = nums[i];
+            }
+        }
+        return ans + 1;
+    }
+
     /* 45. Jump Game II */
     public int jump(int[] nums) {
         int max = 0, count = 0, end = 0;
