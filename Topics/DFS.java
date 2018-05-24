@@ -33,6 +33,34 @@ public class DFS {
         dfs.printList(node108);
     }
 
+    /* 130. Surrounded Regions */
+    public void solve(char[][] board) {
+        if (board.length == 0 || board[0].length == 0)  return;
+        int m = board.length, n = board[0].length;
+        for (int i = 0 ; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if ((i == 0 || i == m - 1 || j == 0 || j == n - 1)
+                        && board[i][j] == 'O' && board[i][j] != 0)
+                    dfs(board, (char)0, i, j, m, n);
+            }
+        }
+        for (int i = 0 ; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                if (board[i][j] != 0 && board[i][j] == 'O')
+                    board[i][j] = 'X';
+                else if (board[i][j] == 0)  board[i][j] = 'O';
+            }
+        }
+    }
+    public void dfs(char[][] board, char parent, int r, int c, int m, int n) {
+        if (r < 0 || r >= m || c < 0 || c >= n || board[r][c] != 'O') return;
+        board[r][c] = parent;
+        dfs(board, parent, r + 1, c, m, n);
+        dfs(board, parent, r - 1, c, m, n);
+        dfs(board, parent, r, c + 1, m, n);
+        dfs(board, parent, r, c - 1, m, n);
+    }
+
     /* 99. Recover Binary Search Tree */
     TreeNode firstNode = null, secondNode = null, preNode = new TreeNode(Integer.MIN_VALUE);
     public void recoverTree(TreeNode root) {

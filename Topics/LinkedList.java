@@ -23,6 +23,23 @@ public class LinkedList {
         ll.printList(head82);
     }
 
+    /* 24. Swap Nodes in Pairs */
+    public ListNode swapPairs(ListNode head) {
+        if (head == null)   return null;
+        ListNode dummy = new ListNode(-1), first = dummy, second = head.next;
+        dummy.next = head;
+        while (second != null) {
+            ListNode next = second.next;
+            second.next = first.next;
+            first.next = second;
+            first = second.next;
+            first.next = next;
+            if (first.next == null) break;
+            second = first.next.next;
+        }
+        return dummy.next;
+    }
+
     /* 19. Remove Nth Node From End of List */
     public ListNode removeNthFromEnd(ListNode head, int n) {
         ListNode start = new ListNode(0);
