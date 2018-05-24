@@ -1,4 +1,6 @@
 package LeetCode.Topics;
+import java.util.*;
+import java.util.LinkedList;
 
 public class StringProblems {
 
@@ -7,6 +9,23 @@ public class StringProblems {
         /* 14. Longest Common Prefix */
         String[] temp14 = {"flower","flow","flight"};
         System.out.println(sp.longestCommonPrefix(temp14));
+    }
+
+    /* 71. Simplify Path */
+    public String simplifyPath(String path) {
+        Stack<String> stack = new Stack<>();
+        String[] strs = path.split("/");
+        for (String s: strs) {
+            if (s.length() != 0 && !s.equals(".")) {
+                if (s.equals("..")) {
+                    if (!stack.isEmpty())   stack.pop();
+                }
+                else    stack.push(s);
+            }
+        }
+        StringBuilder sb = new StringBuilder();
+        for (String s: new LinkedList<>(stack)) sb.append("/" + s);
+        return sb.toString().length() == 0 ? "/" : sb.toString();
     }
 
     /* 58. Length of Last Word */

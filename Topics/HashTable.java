@@ -18,6 +18,32 @@ public class HashTable {
 
     }
 
+    /* 30. Substring with Concatenation of All Words */
+    public List<Integer> findSubstring(String s, String[] words) {
+        HashMap<String, Integer> map = new HashMap<>();
+        List<Integer> list = new LinkedList<>();
+        if (s.length() == 0 || words.length == 0)   return list;
+        for (String str: words) {
+            map.put(str, map.getOrDefault(str, 0) + 1);
+        }
+        int len = words[0].length(), n = words.length, slen = s.length();
+        for (int i = 0; i <= slen - n * len; i++) {
+            HashMap<String, Integer> temp = new HashMap<>();
+            int j = 0;
+            while (j < n) {
+                String sub = s.substring(i + j * len, i + (j + 1) * len);
+                if (map.containsKey(sub)) {
+                    temp.put(sub, temp.getOrDefault(sub, 0) + 1);
+                    if (temp.get(sub) > map.get(sub))   break;
+                }
+                else    break;
+                j++;
+            }
+            if (j == n) list.add(i);
+        }
+        return list;
+    }
+
     /* 288. Unique Word Abbreviation */
     class ValidWordAbbr {
         HashMap<String, String> dict;

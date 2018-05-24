@@ -35,6 +35,29 @@ public class Backtracking {
         /* 60. Permutation Sequence */
         System.out.println(bt.getPermutation(3,3));
 
+        /* 93. Restore IP Addresses */
+        System.out.println(bt.restoreIpAddresses("25525511135"));
+
+    }
+
+    /* 93. Restore IP Addresses */
+    public List<String> restoreIpAddresses(String s) {
+        List<String> list = new LinkedList<>();
+        restoreIpAddressesBacktracking(list, s, "", 0, 0);
+        return list;
+    }
+    public void restoreIpAddressesBacktracking(List<String> list, String s, String ip, int index, int count) {
+        if (count > 4)  return;
+        if (count == 4 && s.length() == index) {
+            list.add(ip);
+            return;
+        }
+        for (int i = 1; i < 4; i++) {
+            if (index + i > s.length()) break;
+            String temp = s.substring(index, index + i);
+            if ((temp.startsWith("0") && temp.length() > 1) || (Integer.parseInt(temp) > 255))    continue;
+            restoreIpAddressesBacktracking(list, s, ip + temp + (count == 3 ? "": "."), index + i, count + 1);
+        }
     }
 
     /* 60. Permutation Sequence */

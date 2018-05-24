@@ -35,6 +35,43 @@ public class BinarySearch {
         /* 287. Find the Duplicate Number */
         int[] arr287 = {2,5,1,1,4,3};
         System.out.println(bs.findDuplicateTwoPointers(arr287));
+
+        /* 34. Search for a Range */
+        int[] arr34 = {5,7,7,8,8,10};
+        System.out.println(Arrays.toString(bs.searchRange(arr34, 8)));
+
+    }
+
+    /* 34. Search for a Range */
+    public int[] searchRange(int[] nums, int target) {
+        int lo = 0, hi = nums.length - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            if (nums[mid] > target)     hi = mid - 1;
+            else if (nums[mid] < target)    lo = mid + 1;
+            else {
+                int l = mid, r = mid;
+                while (l - 1 >= 0 && nums[l - 1] == target) l--;
+                while (r + 1 < nums.length && nums[r + 1] == target) r++;
+                return new int[] {l, r};
+            }
+        }
+        return new int[] {-1, -1};
+    }
+
+    /* 74. Search a 2D Matrix */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        if (matrix.length == 0) return false;
+        int row = matrix.length, col = matrix[0].length;
+        int lo = 0, hi = row * col - 1;
+        while (lo <= hi) {
+            int mid = lo + (hi - lo) / 2;
+            int r = mid / col, c = mid % col;
+            if (matrix[r][c] > target) hi = mid - 1;
+            else if (matrix[r][c] < target) lo = mid + 1;
+            else    return true;
+        }
+        return false;
     }
 
     /* 287. Find the Duplicate Number */
