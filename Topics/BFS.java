@@ -30,12 +30,13 @@ public class BFS {
         Set<String> visited = new HashSet<>();
         queue.offer(new WordHop(0, beginWord));
         visited.add(beginWord);
+        int l = beginWord.length();
         while (!queue.isEmpty()) {
             WordHop next = queue.poll();
             if (next.word.equals(endWord))   return next.level + 1;
-            for (int i = 0; i < beginWord.length(); i++) {
+            for (int i = 0; i < l; i++) {
                 for (int j = 0; j < 26; j++) {
-                    String temp = next.word.substring(0, i) + ('a' + j) + next.word.substring(i + 1);
+                    String temp = next.word.substring(0, i) + (char)('a' + j) + next.word.substring(i + 1);
                     if (dict.contains(temp) && !visited.contains(temp)) {
                         queue.offer(new WordHop(next.level + 1, temp));
                         visited.add(temp);
@@ -45,7 +46,7 @@ public class BFS {
         }
         return 0;
     }
-    public class WordHop {
+    class WordHop {
         int level;
         String word;
         public WordHop (int level, String word) {
