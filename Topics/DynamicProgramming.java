@@ -63,6 +63,24 @@ public class DynamicProgramming {
 
     }
 
+    /* 44. Wildcard Matching */
+    public boolean isMatch(String s, String p) {
+        int lens = s.length(), lenp = p.length();
+        boolean[][] dp = new boolean[lens + 1][lenp + 1];
+        dp[0][0] = true;
+        for (int i = 1; i <= lenp; i++) {
+            if (p.charAt(i - 1) != '*') break;
+            dp[0][i] = true;
+        }
+        for (int i = 1; i <= lens; i++) {
+            for (int j = 1; j <= lenp; j++) {
+                if (s.charAt(i - 1) == p.charAt(j - 1) || p.charAt(j - 1) == '?')   dp[i][j] = dp[i - 1][j - 1];
+                else if (p.charAt(j - 1) == '*')  dp[i][j] = dp[i - 1][j] || dp[i][j - 1];
+            }
+        }
+        return dp[lens][lenp];
+    }
+
     /* 87. Scramble String */
     public boolean isScramble(String s1, String s2) {
         if (s1.equals(s2)) return true;

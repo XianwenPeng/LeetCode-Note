@@ -18,6 +18,46 @@ public class HashTable {
 
     }
 
+    /* 36. Valid Sudoku */
+    public boolean isValidSudoku(char[][] board) {
+        HashMap<Integer, HashSet<Character>> subBoxes = new HashMap<>();
+        HashMap<Integer, HashSet<Character>> rows = new HashMap<>();
+        HashMap<Integer, HashSet<Character>> cols = new HashMap<>();
+        int m = board.length, n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                int index = (i / 3) * 3 + j / 3;
+                char ch = board[i][j];
+                HashSet<Character> subBoxSet = subBoxes.getOrDefault(index, new HashSet<>());
+                HashSet<Character> rowSet = rows.getOrDefault(i, new HashSet<>());
+                HashSet<Character> colSet = cols.getOrDefault(j, new HashSet<>());
+                if (ch != '.' && (subBoxSet.contains(ch) || rowSet.contains(ch) || colSet.contains(ch))) return false;
+                subBoxSet.add(ch);
+                rowSet.add(ch);
+                colSet.add(ch);
+                subBoxes.put(index, subBoxSet);
+                rows.put(i, rowSet);
+                cols.put(j, colSet);
+            }
+        }
+        return true;
+    }
+    public boolean isValidSudokuHashString(char[][] board) {
+        Set<String> set = new HashSet<>();
+        int m = board.length, n = board[0].length;
+        for (int i = 0; i < m; i++) {
+            for (int j = 0; j < n; j++) {
+                char ch = board[i][j];
+                if (ch != '.') {
+                    if (!set.add(ch + "row in" + i) || !set.add(ch + "col in" + j)
+                            || !set.add(ch + "block in i-" + i / 3 + "j-" + j / 3))  return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
     /* 30. Substring with Concatenation of All Words */
     public List<Integer> findSubstring(String s, String[] words) {
         HashMap<String, Integer> map = new HashMap<>();

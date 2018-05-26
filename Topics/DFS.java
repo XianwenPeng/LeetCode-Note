@@ -33,8 +33,6 @@ public class DFS {
         dfs.printList(node108);
     }
 
-    // 5.24th
-
     /* 130. Surrounded Regions */
     public void solve(char[][] board) {
         if (board.length == 0 || board[0].length == 0)  return;

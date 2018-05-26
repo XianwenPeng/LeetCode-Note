@@ -15,7 +15,43 @@ public class BFS {
     }
 
     public static void main(String[] args) {
+        BFS bfs = new BFS();
+        /* 127. Word Ladder */
+        String beginWord = "hit";
+        String endWord = "cog";
+        String[] wordList = {"hot","dot","dog","lot","log","cog"};
+        System.out.println(bfs.ladderLength(beginWord, endWord, Arrays.asList(wordList)));
+    }
 
+    /* 127. Word Ladder */
+    public int ladderLength(String beginWord, String endWord, List<String> wordList) {
+        Queue<WordHop> queue = new LinkedList<>();
+        Set<String> dict = new HashSet<>(wordList);
+        Set<String> visited = new HashSet<>();
+        queue.offer(new WordHop(0, beginWord));
+        visited.add(beginWord);
+        while (!queue.isEmpty()) {
+            WordHop next = queue.poll();
+            if (next.word.equals(endWord))   return next.level + 1;
+            for (int i = 0; i < beginWord.length(); i++) {
+                for (int j = 0; j < 26; j++) {
+                    String temp = next.word.substring(0, i) + ('a' + j) + next.word.substring(i + 1);
+                    if (dict.contains(temp) && !visited.contains(temp)) {
+                        queue.offer(new WordHop(next.level + 1, temp));
+                        visited.add(temp);
+                    }
+                }
+            }
+        }
+        return 0;
+    }
+    public class WordHop {
+        int level;
+        String word;
+        public WordHop (int level, String word) {
+            this.level = level;
+            this.word = word;
+        }
     }
 
     /* 103. Binary Tree Zigzag Level Order Traversal */
