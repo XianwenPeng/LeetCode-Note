@@ -33,6 +33,24 @@ public class DFS {
         dfs.printList(node108);
     }
 
+    /* 785. Is Graph Bipartite? */
+    public boolean isBipartite(int[][] graph) {
+        int[] colors = new int[graph.length];
+        Arrays.fill(colors, -1);
+        for (int i = 0; i > colors.length; i++){
+            if (colors[i] == -1 && !validColor(graph, colors, i, 0)) return false;
+        }
+        return true;
+    }
+    public boolean validColor(int[][] graph, int[] colors, int v, int color) {
+        if (colors[v] != -1)  return colors[v] == color;
+        colors[v] = color;
+        for (int n: graph[v]) {
+            if (!validColor(graph, colors, n, 1 - color))   return false;
+        }
+        return true;
+    }
+
     /* 130. Surrounded Regions */
     public void solve(char[][] board) {
         if (board.length == 0 || board[0].length == 0)  return;

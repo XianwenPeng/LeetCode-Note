@@ -20,6 +20,57 @@ public class Tree {
         tr.missingNumber(num268);
     }
 
+    /* 208. Implement Trie (Prefix Tree) */
+    class Trie {
+        class Node {
+            Node[] nodes;
+            boolean wordEnd;
+            public Node () {
+                nodes = new Node[26];
+                wordEnd = false;
+            }
+        }
+        Node root;
+
+        /** Initialize your data structure here. */
+        public Trie() {
+            root = new Node();
+        }
+
+        /** Inserts a word into the trie. */
+        public void insert(String word) {
+            char[] chs = word.toLowerCase().toCharArray();
+            Node node = root;
+            for (char c: chs) {
+                if (node.nodes[c - 'a'] == null)   node.nodes[c - 'a'] = new Node();
+                node = node.nodes[c - 'a'];
+            }
+            node.wordEnd = true;
+        }
+
+        /** Returns if the word is in the trie. */
+        public boolean search(String word) {
+            char[] chs = word.toLowerCase().toCharArray();
+            Node node = root;
+            for (char c: chs) {
+                if (node.nodes[c - 'a'] == null)  return false;
+                node = node.nodes[c - 'a'];
+            }
+            return node.wordEnd;
+        }
+
+        /** Returns if there is any word in the trie that starts with the given prefix. */
+        public boolean startsWith(String prefix) {
+            char[] chs = prefix.toLowerCase().toCharArray();
+            Node node = root;
+            for (char c: chs) {
+                if (node.nodes[c - 'a'] == null)  return false;
+                node = node.nodes[c - 'a'];
+            }
+            return true;
+        }
+    }
+
     /* 106. Construct Binary Tree from Inorder and Postorder Traversal */
     public TreeNode buildTreeWithInorderAndPostorder(int[] inorder, int[] postorder) {
         return buildTreeWithInorderAndPostorderHelper(postorder.length - 1, 0, inorder.length - 1, inorder, postorder);

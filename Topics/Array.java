@@ -29,6 +29,111 @@ public class Array {
         System.out.println(ar.summaryRanges(temp228));
     }
 
+    /* 325. Maximum Size Subarray Sum Equals k */
+    public int maxSubArrayLen(int[] nums, int k) {
+        int preSum = 0, max = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        for (int i = 0; i < nums.length; i++) {
+            preSum += nums[i];
+            if (map.containsKey(preSum - k))
+                max = Math.max(max, i - map.get(preSum - k));
+            if (!map.containsKey(preSum))
+                map.put(preSum, i);
+        }
+        return max;
+    }
+
+    /* 525. Contiguous Array */
+    public int findMaxLength(int[] nums) {
+        int preSum = 0, max = 0;
+        HashMap<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        for (int i = 0; i < nums.length; i++) {
+            preSum += nums[i] == 0 ? -1 : 1;
+            if (preSum == 0)    max += 1;
+            else if (map.containsKey(preSum))
+                max = Math.max(max, i - map.get(preSum));
+            else
+                map.put(preSum, i);
+        }
+        return max;
+    }
+
+    /* 275. H-Index II */
+    public int hIndexII(int[] citations) {
+        for (int i = 0; i < citations.length; i++) {
+            if (citations[i] >= citations.length - i)    return i;
+        }
+        return 0;
+    }
+
+    /* 274. H-Index */
+    public int hIndex(int[] citations) {
+        int bucket[] = new int[citations.length];
+        for (int i = 0; i < citations.length; i++) {
+            if (citations[i] >= bucket.length)  bucket[bucket.length - 1]++;
+            else if (citations[i] >= 1)    bucket[citations[i] - 1]++;
+        }
+        int preSum = 0;
+        for (int i = bucket.length; i > 0; i ++) {
+            preSum += bucket[i - 1];
+            if (preSum >= i)     return i;
+        }
+        return 0;
+    }
+
+    /* 334. Increasing Triplet Subsequence */
+    public boolean increasingTriplet(int[] nums) {
+        if (nums.length < 3)    return false;
+        int curmax = -1, curmin = nums[0];
+        for (int i = 1; i < nums.length; i++) {
+            if (nums[i] > curmin) {
+                if (curmax != -1 && nums[i] > curmax)
+                    return true;
+                else
+                    curmax = nums[i];
+            }
+            else {
+                curmin = nums[i];
+            }
+        }
+        return false;
+    }
+
+    /* 209. Minimum Size Subarray Sum */
+    public int minSubArrayLen(int s, int[] nums) {
+        if (nums.length == 0)   return 0;
+        int left = 0, right = 0, min = Integer.MAX_VALUE, subsum = nums[0];
+        while (left <= right && right < nums.length) {
+            if (subsum < s) {
+                right++;
+                if (right == nums.length)   break;
+                subsum += nums[right];
+            }
+            else {
+                min = Math.min(min, right - left + 1);
+                subsum -= nums[left];
+                left ++;
+            }
+        }
+        return min == Integer.MAX_VALUE ? 0 : min;
+    }
+
+    /* 825. Friends Of Appropriate Ages */
+    public int numFriendRequests(int[] ages) {
+        int[] count = new int[121];
+        for (int i: ages)   count[i]++;
+        int ans = 0;
+        for (int i = 0; i <= 120; i++) {
+            if (i > 14) {
+                ans += count[i] * (count[i] - 1 + count[i - 1] - count[i / 2 + 7]);
+            }
+            count[i] += count[i - 1];
+        }
+        return ans;
+    }
+
     /* 80. Remove Duplicates from Sorted Array II */
     public int removeDuplicates(int[] nums) {
         if (nums.length <= 2)    return nums.length;

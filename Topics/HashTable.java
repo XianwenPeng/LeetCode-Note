@@ -18,6 +18,44 @@ public class HashTable {
 
     }
 
+    /* 554. Brick Wall */
+    public int leastBricks(List<List<Integer>> wall) {
+        HashMap<Integer, Integer> start = new HashMap<>();
+        int height = wall.size();
+        for (List<Integer> list: wall) {
+            int last = 0;
+            for (int i = 0; i < list.size() - 1; i++) {
+                int num = last + list.get(i);
+                start.put(num, start.getOrDefault(num, 0) + 1);
+                last = num;
+            }
+        }
+        int min = height;
+        for (int i: start.keySet()) {
+            min = Math.min(min, height - start.get(i));
+        }
+        return min;
+    }
+
+    /* 398. Random Pick Index */
+    class Solution {
+        HashMap<Integer, List<Integer>> map;
+        public Solution(int[] nums) {
+            map = new HashMap<>();
+            for (int i = 0; i < nums.length; i++) {
+                map.getOrDefault(nums[i], new ArrayList<>()).add(i);
+            }
+        }
+
+        public int pick(int target) {
+            if (!map.containsKey(target))   return -1;
+            Random random = new Random();
+            List<Integer> list = map.get(target);
+            return list.get(random.nextInt(list.size()));
+        }
+    }
+
+
     /* 36. Valid Sudoku */
     public boolean isValidSudoku(char[][] board) {
         HashMap<Integer, HashSet<Character>> subBoxes = new HashMap<>();

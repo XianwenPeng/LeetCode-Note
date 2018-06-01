@@ -61,6 +61,83 @@ public class DynamicProgramming {
         System.out.println(dp.longestValidParentheses("()(())"));
         System.out.println(dp.longestValidParentheses("(()())"));
 
+        /* 764. Largest Plus Sign */
+        int[][] mines = {{4,2}};
+        System.out.println(dp.orderOfLargestPlusSign(5, mines));
+    }
+
+    /* 764. Largest Plus Sign */
+    public int orderOfLargestPlusSign(int N, int[][] mines) {
+        int[][] dp = new int[N][N];
+        for (int[] a: dp) Arrays.fill(a, 1);
+        for (int[] a: mines) dp[a[0]][a[1]] = 0;
+        int ans = 0;
+        int[][] left = new int[N][N];
+        int[][] right = new int[N][N];
+        int[][] top = new int[N][N];
+        int[][] down = new int[N][N];
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (dp[i][j] != 0) {
+                    top[i][j] = (i > 0) ? top[i - 1][j] + 1 : 1;
+                    left[i][j] = (j > 0) ? left[i][j - 1] + 1 : 1;
+                }
+                else {
+                    top[i][j] = 0;
+                    left[i][j] = 0;
+                }
+            }
+        }
+        for (int i = N - 1; i >= 0; i--) {
+            for (int j = N - 1; j >= 0; j--) {
+                if (dp[i][j] != 0) {
+                    down[i][j] = (i < N - 1) ? down[i + 1][j] + 1 : 1;
+                    right[i][j] = (j < N - 1) ? right[i][j + 1] + 1 : 1;
+                } else {
+                    down[i][j] = 0;
+                    right[i][j] = 0;
+                }
+                ans = Math.max(ans, Math.min(Math.min(top[i][j], left[i][j]), Math.min(down[i][j], right[i][j])));
+            }
+        }
+        return ans;
+    }
+
+    /* 801. Minimum Swaps To Make Sequences Increasing */
+    public int minSwap(int[] A, int[] B) {
+        int[] dp = {0, 1};  // 0 not swap, 1 swap
+        for (int i = 0; i < A.length - 1; i++) {
+            int[] cur = {0, 1};
+            int min = Integer.MAX_VALUE;
+            if (A[i] < A[i + 1] && B[i] < B[i + 1]) min = Math.min(min, dp[0]);
+            if (A[i] < B[i + 1] && B[i] < A[i + 1]) min = Math.min(min, dp[1]);
+            cur[0] += min;
+
+            min = Integer.MAX_VALUE;
+            if(B[i] < A[i + 1] && A[i] < B[i + 1]) min = Math.min(min, dp[0]);
+            if(B[i] < B[i + 1] && A[i] < A[i + 1]) min = Math.min(min, dp[1]);
+            cur[1] += min;
+            dp = cur;
+        }
+        return Math.min(dp[0], dp[1]);
+    }
+
+    /* 377. Combination Sum IV */
+    public int combinationSum4(int[] nums, int target) {
+        int[] dp = new int[target + 1];
+        Arrays.fill(dp, -1);
+        dp[0] = 1;
+        return combinationSum4DFS(nums, target, dp);
+    }
+    public int combinationSum4DFS(int[] nums, int target, int[] dp) {
+        if (dp[target] != -1)   return dp[target];
+        int count = 0;
+        for (int num: nums) {
+            if (num <= target)
+                count += combinationSum4DFS(nums, target - num, dp);
+        }
+        dp[target] = count;
+        return count;
     }
 
     /* 44. Wildcard Matching */
