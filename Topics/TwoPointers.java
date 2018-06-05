@@ -17,6 +17,54 @@ public class TwoPointers {
         System.out.println(tp.trap(arr42));
     }
 
+    /* 215. Kth Largest Element in an Array */
+    public int findKthLargest(int[] a, int k) {
+        return quickSelect(a, k, 0, a.length - 1);
+    }
+    public int quickSelect(int[] a, int k, int left, int right) {
+        int pivot = a[right], low = left, i = left;
+        while (i < right) {
+            if (a[i] <= pivot) swap(a, low++, i);
+            i++;
+        }
+        swap(a, low, right);
+        if (a.length - low == k) return a[low];
+        else if (a.length - low < k)    return quickSelect(a, k, left, low - 1);
+        else return quickSelect(a, k, low + 1, right);
+    }
+
+    /* LintCode 49. Sort Letters by Case */
+    public void sortLetters(char[] chars) {
+        if (chars.length < 2)   return;
+        int left = 0, right = chars.length - 1, i = 0;
+        while (i <= right) {
+            if (chars[i] >= 'a') {
+                char temp = chars[i];
+                chars[i++] = chars[left];
+                chars[left++] = temp;
+            }
+            else {
+                char temp = chars[i];
+                chars[i] = chars[right];
+                chars[right--] = temp;
+            }
+        }
+    }
+
+    /* LintCode 373. Partition Array by Odd and Even */
+    public void partitionArray(int[] nums) {
+        if (nums.length < 2)    return;
+        int even = nums.length - 1, odd = 0, i = 0;
+        while (i <= even) {
+            if (nums[i] % 2 == 1) {
+                swap(nums, i++, odd++);
+            }
+            else {
+                swap(nums, i, even--);
+            }
+        }
+    }
+
     /* 75. Sort Colors*/
     public void sortColors(int[] nums) {
         int left = 0, right = nums.length - 1, i = 0;
