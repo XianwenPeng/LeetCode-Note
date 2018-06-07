@@ -66,6 +66,18 @@ public class DynamicProgramming {
         System.out.println(dp.orderOfLargestPlusSign(5, mines));
     }
 
+    /* 70. Climbing Stairs */
+    public int climbStairs(int n) {
+        if (n < 2)  return 0;
+        int[] dp = new int[n];
+        dp[0] = 1;
+        dp[1] = 2;
+        for (int i = 2; i < n; i++) {
+            dp[i] = dp[i - 1] + dp[i - 2];
+        }
+        return dp[n - 1];
+    }
+
     /* 764. Largest Plus Sign */
     public int orderOfLargestPlusSign(int N, int[][] mines) {
         int[][] dp = new int[N][N];
@@ -524,17 +536,6 @@ public class DynamicProgramming {
             dp[i] = Math.min(dp[i - 2] + cost[i], dp[i - 1] + cost[i]);
         }
         return Math.min(dp[dp.length - 1], dp[dp.length - 2]);
-    }
-
-    /* 70. Climbing Stairs */
-    public int climbStairs(int n) {
-        if (n <= 2) return n;
-        int[] dp = new int[n];
-        dp[0] = 1; dp[1] = 2;
-        for (int i = 2; i < n; i++) {
-            dp[i] = dp[i - 1] + dp[i - 2];
-        }
-        return dp[n - 1];
     }
 
     /* 53. Maximum Subarray */

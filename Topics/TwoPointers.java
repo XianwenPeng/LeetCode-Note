@@ -5,6 +5,11 @@ import java.util.*;
 import java.util.LinkedList;
 
 public class TwoPointers {
+    public class ListNode {
+        int val;
+        ListNode next;
+        ListNode(int x) { val = x; }
+    }
 
     public static void main(String[] args) {
         TwoPointers tp = new TwoPointers();
@@ -15,6 +20,149 @@ public class TwoPointers {
         /* 42. Trapping Rain Water */
         int[] arr42 = {0,1,0,2,1,0,1,3,2,1,2,1};
         System.out.println(tp.trap(arr42));
+    }
+
+    /* 142. Linked List Cycle II */
+    public ListNode detectCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast)   break;
+        }
+        if (fast == null || fast.next == null)  return null;
+        slow = head;
+        while (slow != fast) {
+            slow = slow.next;
+            fast = fast.next;
+        }
+        return slow;
+    }
+
+    /* 141. Linked List Cycle */
+    public boolean hasCycle(ListNode head) {
+        ListNode slow = head, fast = head;
+        while (fast != null && fast.next != null) {
+            slow = slow.next;
+            fast = fast.next.next;
+            if (slow == fast) return true;
+        }
+        return false;
+    }
+
+    /* 340. Longest Substring with At Most K Distinct Characters */
+    public int lengthOfLongestSubstringKDistinct(String s, int k) {
+        HashMap<Character, Integer> map = new HashMap<>();
+        int left = 0, max = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            map.put(c, map.getOrDefault(c, 0) + 1);
+            while (map.size() > k) {
+                char cleft = s.charAt(left++);
+                map.put(cleft, map.get(cleft) - 1);
+                if (map.get(cleft) == 0) map.remove(cleft);
+            }
+            max = Math.max(max, right - left + 1);
+        }
+        return max;
+    }
+
+    /* 3. Longest Substring Without Repeating Characters */
+    public int lengthOfLongestSubstring(String s) {
+        Set<Character> set = new HashSet<>();
+        int left = 0, subLen = 0, max = 0, count = 0;
+        for (int right = 0; right < s.length(); right++) {
+            char c = s.charAt(right);
+            if (!set.contains(c)) {
+                count++;
+                max = Math.max(count, max);
+                set.add(c);
+            }
+            else {
+                while (left < s.length()) {
+                    char cleft = s.charAt(left++);
+                    if (cleft != c) {
+                        count--;
+                        set.remove(cleft);
+                    }
+                    else
+                        break;
+                }
+            }
+        }
+        return max;
+    }
+
+    /* 632. Smallest Range */
+    class Node {
+        int val;
+        int index;
+        int list;
+        public Node (int list, int index, int val) {
+            this.list = list;
+            this.index = index;
+            this.val = val;
+        }
+    }
+    public int[] smallestRange(List<List<Integer>> nums) {
+        PriorityQueue<Node> pq = new PriorityQueue<>((i1, i2) -> {return i1.val - i2.val;});
+        int max = Integer.MIN_VALUE, min = Integer.MAX_VALUE;
+        for (int i = 0; i < nums.size(); i++) {
+            int num = nums.get(i).get(0);
+            pq.offer(new Node(i, 0, num));
+            max = Math.max(max, num);
+            min = Math.min(min, num);
+        }
+        int diff = max - min, left = min, right = max;
+        while (pq.size() == nums.size()){
+            Node cur = pq.poll();
+            if (diff > max - cur.val) {
+                diff = max - cur.val;
+                left = cur.val;
+                right = max;
+            }
+            if (cur.index < nums.get(cur.list).size() - 1) {
+                cur.index++;
+                cur.val = nums.get(cur.list).get(cur.index);
+                pq.offer(cur);
+                if (cur.val > max)
+                    max = cur.val;
+            }
+        }
+        return new int[] {left, right};
+    }
+
+
+    /* 209. Minimum Size Subarray Sum */
+    public int minSubArrayLen(int s, int[] nums) {
+        int left = 0, subsum = 0, min = Integer.MAX_VALUE;
+        for (int right = 0; right < nums.length; right++) {
+            subsum += nums[right];
+            while (left < nums.length) {
+                if (subsum >= s) {
+                    min = Math.min(min, right - left);
+                    subsum -= nums[left++];
+                }
+                else
+                    break;
+            }
+        }
+        return min;
+    }
+
+    /* 19. Remove Nth Node From End of List */
+    public ListNode removeNthFromEnd(ListNode head, int n) {
+        ListNode dummy = new ListNode(-1), start = dummy, end = dummy;
+        dummy.next = head;
+        for (int i = 0; i < n; i++) {
+            end = end.next;
+        }
+        while (end.next != null) {
+            end = end.next;
+            start = start.next;
+        }
+        start.next = start.next.next;
+        return dummy.next;
     }
 
     /* 215. Kth Largest Element in an Array */
@@ -355,24 +503,28 @@ public class TwoPointers {
 
     /* 76. Minimum Window Substring */
     public String minWindow(String s, String t) {
-        int min = Integer.MAX_VALUE, end = 0, begin = 0, count = t.length();
-        String ans = "";
-        int[] cnt = new int[256];
-        for (char c: t.toCharArray()) cnt[c]++;
-        while (end < s.length()) {
-            char c = s.charAt(end);
-            if (--cnt[c] >= 0)  count--;
-            while (count == 0 && begin <= end) {
-                if (min > end - begin) {
-                    min = end - begin;
-                    ans = s.substring(begin, end + 1);
+        int right = 0, min = Integer.MAX_VALUE, left = 0, count = 0;
+        String str = "", minstr = "";
+        int[] chs = new int[256];
+        for (int i = 0; i < t.length(); i++)    chs[t.charAt(i)]++;
+        while (right < s.length()) {
+            char cright = s.charAt(right);
+            chs[cright]--;
+            count += chs[cright] >= 0 ? 1 : 0;
+            str += cright;
+            while (count == t.length() && left < s.length()) {
+                if (str.length() < min) {
+                    min = str.length();
+                    minstr = str;
                 }
-                c = s.charAt(begin);
-                if (++cnt[c] > 0)   count++;
-                begin++;
+                char cleft = s.charAt(left);
+                chs[cleft]++;
+                str = str.substring(1);
+                if (chs[cleft] > 0) count--;
+                left++;
             }
-            end++;
+            right++;
         }
-        return ans;
+        return minstr;
     }
 }
