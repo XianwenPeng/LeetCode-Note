@@ -593,13 +593,6 @@ public class FUA {
         stack.push(temp);
     }
 
-    /* 给一堆k维坐标，和一个k维坐标，然后需要从这堆k维坐标找到距离这个k维坐标最近的n个k维坐标, k << n。 很绕？给个例子，
-    输入：[[1,0],[2,0],[3,0],[4,0]], [-1,0], n = 2, 输出[[1,0],[2,0]]。这里需要用到求距离那个公式，但是不需要开根号，
-    根号里面的东西直接比较就好，开了的话你就得用到double(Python的话当我没说）。最初给的解法是用个minHeap，里面存的是坐标+距离的Pair，
-    根据距离来排序，最后输出前n个坐标就好。问有没有办法优化？有，用个maxHeap，里面最多只存n个Pair，如果满了，
-    新来一个Pair就和top进行比较，距离比top还大的话直接扔掉，否则的话把top扔掉，加入堆。这里的时间复杂度是O(N*(k + lgn))，
-    比之前的O(N*(k + lgN))要优。 */
-
 
     /* 353. Design Snake Game */
     class SnakeGame {
@@ -650,5 +643,124 @@ public class FUA {
             return body.size() - 1;
         }
     }
+
+    /* 146. LRU Cache */
+    public class LRUCache {
+        class Node {
+            int key;
+            int val;
+            Node prev;
+            Node next;
+            public Node(int key, int val) {
+                this.key = key;
+                this.val = val;
+                prev = null;
+                next = null;
+            }
+        }
+        HashMap<Integer, Node> map;
+        Node head, tail;
+        int capacity, used;
+        public LRUCache(int capacity) {
+            map = new HashMap<>();
+            head = new Node(0, 0);
+            tail = new Node(0, 0);
+            head.next = tail;
+            tail.prev = head;
+            this.capacity = capacity;
+            this.used = 0;
+        }
+
+        public int get(int key) {
+            if (map.containsKey(key)) {
+                Node node = map.get(key);
+                removeNode(node);
+                addToHead(node);
+                return map.get(key).val;
+            }
+            else    return -1;
+        }
+
+        public void put(int key, int value) {
+            if (capacity == 0)  return;
+            if (map.containsKey(key)) {
+                Node node = map.get(key);
+                node.val = value;
+                removeNode(node);
+                addToHead(node);
+            }
+            else {
+                Node node = new Node(key, value);
+                map.put(key, node);
+                if (capacity == used) {
+                    map.remove(tail.prev.key);
+                    removeNode(tail.prev);
+                    addToHead(node);
+                }
+                else {
+                    addToHead(node);
+                    used++;
+                }
+            }
+        }
+
+        public void removeNode(Node node) {
+            node.prev.next = node.next;
+            node.next.prev = node.prev;
+        }
+        public void addToHead(Node node) {
+            node.next = head.next;
+            node.prev = head;
+            head.next.prev = node;
+            head.next = node;
+        }
+    }
+
+    /* 给一堆k维坐标，和一个k维坐标，然后需要从这堆k维坐标找到距离这个k维坐标最近的n个k维坐标, k << n。 很绕？给个例子，
+    输入：[[1,0],[2,0],[3,0],[4,0]], [-1,0], n = 2, 输出[[1,0],[2,0]]。这里需要用到求距离那个公式，但是不需要开根号，
+    根号里面的东西直接比较就好，开了的话你就得用到double(Python的话当我没说）。最初给的解法是用个minHeap，里面存的是坐标+距离的Pair，
+    根据距离来排序，最后输出前n个坐标就好。问有没有办法优化？有，用个maxHeap，里面最多只存n个Pair，如果满了，
+    新来一个Pair就和top进行比较，距离比top还大的话直接扔掉，否则的话把top扔掉，加入堆。这里的时间复杂度是O(N*(k + lgn))，
+    比之前的O(N*(k + lgN))要优。 */
+
+    /* 给一个unsorted array，找出值不相邻的数的和的最大值，其实就是说从这个array里面选一些数，要使得这些数的和最大，输出最大值，
+    但是假如说你选x，则x - 1, x + 1就不能选，例如[4,5,6,7,8]，输出18(4 + 6 + 8)，再来一个例子[5,5,4,8,7,9]，
+    输出26(5 + 5 + 7 + 9)。面试官口述题目，没太听懂，然后我说了我对题目的理解，她貌似有点不耐烦的样子，啥也不说等着我给出解法，
+    最后让她多给了个例子，总算理解了，理解题意花了10分钟，如果面试官换种方式重述下题目大意，或者把题目敲出来也不至于白白耗费这10分钟，
+    当然我的理解能力也有待提升，换位思考下，作为面试官，口述题目面试者没理解题意，你有许多种方式来让他理解，作为面试者，你不理解，
+    唯一的方式就是问，最多给出自己的理解方式，题都不知道是什么，还需要面啥？？？时间比较紧，但是凭直觉给出DFS backtrack暴力解法，
+    最后逻辑应该是对的，但是没跑出来，不知道哪出了问题。。。后来想想这道题用DP其实很好解，O(n*lgn)不难想到，O(n)也是可以的，
+    我下来实现了下，如果有需要的同学可以发邮件给我，邮箱会在最后给出。*/
+
+
+    /* 5.2 店面，第一题，closest node to target in BST
+    第二题，k个closest node to target in BST
+    */
+
+    public List<TreeNode> inorderTraversalInterview(TreeNode root) {
+        List<TreeNode> list = new LinkedList<>();
+        inorderHelper(root, list);
+        return list;
+    }
+
+    public void inorderHelper(TreeNode root, List<TreeNode> list) {
+        if (root.left != null) 	inorderHelper(root.left, list);
+        list.add(root);
+        if (root.right != null)	inorderHelper(root.right, list);
+    }
+
+    public List<TreeNode> kClosestNode(TreeNode root, int target, int k) {
+        List<TreeNode> sorted = inorderTraversalInterview(root);
+        int left = 0, right = sorted.size() - k;
+        while (left < right) {
+            int mid = left + (right - left ) /2;
+            if (target - sorted.get(mid).val > sorted.get(mid + k).val - target)	left = mid + 1;
+            else 	right = mid;
+        }
+        List<TreeNode> list = new LinkedList<>();
+        for (int i = left; i < left + k; i++ ) 		list.add(sorted.get(i));
+        return list;
+    }
+
 
 }
