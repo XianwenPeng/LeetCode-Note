@@ -11,9 +11,154 @@ public class BinaryTree_DivideConquer_DFS_BFS {
         TreeNode(int x) { val = x; }
     }
 
+    /* 87. Remove Node in Binary Search Tree */
+    public TreeNode removeNode(TreeNode root, int value) {
+        // write your code here
+        TreeNode node = root;
+        while (node != root) {
+            node
+        }
+    }
+
+    /* 173. Binary Search Tree Iterator */
+    public class BSTIterator {
+        Stack<TreeNode> stack = new Stack<>();
+        public BSTIterator(TreeNode root) {
+            TreeNode temp = root;
+            while (temp != null) {
+                stack.push(temp);
+                temp = temp.left;
+            }
+        }
+
+        /** @return whether we have a next smallest number */
+        public boolean hasNext() {
+            return !stack.isEmpty();
+        }
+
+        /** @return the next smallest number */
+        public int next() {
+            TreeNode node = stack.pop();
+            int ans = node.val;
+            if (node.right != null) node = node.right;
+            while (node != null) {
+                stack.push(node);
+                node = node.right;
+            }
+            return ans;
+        }
+    }
+
+
+    /* LintCode 11. Search Range in Binary Search Tree */
+    public List<Integer> searchRange(TreeNode root, int k1, int k2) {
+        // write your code here
+        List<Integer> list = new LinkedList<>();
+        if (root == null)   return list;
+
+        List<Integer> left = searchRange(root.left, k1, k2);
+        List<Integer> right = searchRange(root.right, k1, k2);
+
+        list.addAll(left);
+        if (root.val >= k1 && root.val <= k2)   list.add(root.val);
+        list.addAll(right);
+        return list;
+
+    }
+
+    /* LintCode 85. 在二叉查找树中插入节点 */
+    // Recursive
+    public TreeNode insertNode(TreeNode root, TreeNode node) {
+        // write your code here
+        if (root == null)   return node;
+        if (root.val > node.val)    root.left = insertNode(root.left, node);
+        else    root.right = insertNode(root.right, node);
+        return root;
+    }
+    // Iterative
+    public TreeNode insertNodeIterative(TreeNode root, TreeNode node) {
+        if (root == null)   return node;
+        TreeNode temp = root, last= null;
+        while (temp != null) {
+            last = temp;
+            if (temp.val > node.val)    temp = temp.left;
+            else    temp = temp.right;
+        }
+        if (last != null) {
+            if (last.val > node.val)    last.left = node;
+            else    last.right = node;
+        }
+        return root;
+    }
+
+    /* 98. Validate Binary Search Tree */
+    TreeNode last;
+    public boolean isValidBST(TreeNode root) {
+        if (root == null)   return true;
+        boolean left = isValidBST(root.left);
+        if (last != null && root.val <= last.val)  return false;
+        else last = root;
+        boolean right = isValidBST(root.right);
+        return left && right;
+    }
+    // Inorder
+    public boolean isValidBSTInorder(TreeNode root) {
+        List<Integer> list = new LinkedList<>();
+        isValidBSTInorderHelper(root, list);
+        if (list.size() < 2)    return true;
+        for (int i = 1; i < list.size(); i++) {
+            if (list.get(i) < list.get(i - 1))  return false;
+        }
+        return true;
+    }
+    public void isValidBSTInorderHelper(TreeNode root, List<Integer> list) {
+        if (root == null) return;
+        isValidBSTInorderHelper(root.left, list);
+        list.add(root.val);
+        isValidBSTInorderHelper(root.right, list);
+    }
+
+    /* 103. Binary Tree Zigzag Level Order Traversal */
+    public List<List<Integer>> zigzagLevelOrder(TreeNode root) {
+        List<List<Integer>> list = new LinkedList<>();
+        Queue<TreeNode> queue = new LinkedList<>();
+        if (root == null)   return list;
+        queue.offer(root);
+        int level = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> sublist = new LinkedList<>();
+            for (int i = 0; i < size; i ++) {
+                TreeNode node = queue.poll();
+                if (level % 2 == 0) sublist.add(node.val);
+                else    sublist.add(0, node.val);
+                if (node.left != null)  queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+            list.add(sublist);
+            level++;
+        }
+        return list;
+    }
+
     /* 102. Binary Tree Level Order Traversal */
     public List<List<Integer>> levelOrder(TreeNode root) {
         Queue<TreeNode> queue = new LinkedList<>();
+        List<List<Integer>> list = new LinkedList<>();
+        if (root == null)   return list;
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            List<Integer> sublist = new LinkedList<>();
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                sublist.add(node.val);
+                if (node.left != null)  queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+            list.add(sublist);
+        }
+        return list;
     }
 
     /* 236. Lowest Common Ancestor of a Binary Tree */
