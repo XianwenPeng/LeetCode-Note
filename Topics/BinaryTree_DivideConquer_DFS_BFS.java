@@ -14,10 +14,40 @@ public class BinaryTree_DivideConquer_DFS_BFS {
     /* 87. Remove Node in Binary Search Tree */
     public TreeNode removeNode(TreeNode root, int value) {
         // write your code here
-        TreeNode node = root;
-        while (node != root) {
-            node
+        TreeNode dummy = new TreeNode(-1);
+        dummy.left = root;
+        TreeNode node = root, last = dummy;
+        while (node != null) {
+            TreeNode temp = node;
+            if (node.val > value)   node = node.left;
+            else if (node.val < value)    node = node.right;
+            else break;
+            last = temp;
         }
+        if (node == null)   return root;
+        if (node.right == null) {
+            if (last.left == node)  last.left = node.left;
+            else    last.right = node.left;
+        }
+        else {
+            TreeNode temp = node.right, father = node;
+            while (temp.left != null) {
+                father = temp;
+                temp = temp.left;
+            }
+
+            // Remove the closest greater than value node
+            if (father.left == temp)    father.left = temp.right;
+            else    father.right = temp.right;
+
+            // Replace the value node
+            if (last.left == node)  last.left = temp;
+            else    last.right = temp;
+
+            temp.left = node.left;
+            temp.right = node.right;
+        }
+        return dummy.left;
     }
 
     /* 173. Binary Search Tree Iterator */
