@@ -11,6 +11,65 @@ public class BinaryTree_DivideConquer_DFS_BFS {
         TreeNode(int x) { val = x; }
     }
 
+    public List<List<String>> solveNQueens(int n) {
+
+    /* 47. Permutations II */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> list = new LinkedList<>();
+        permuteUniqueHelper(list, new LinkedList<>(), nums, new boolean[nums.length]);
+        return list;
+    }
+    public void permuteUniqueHelper(List<List<Integer>> list, List<Integer> temp,
+                                    int[] nums, boolean[] visited) {
+        if (temp.size() == nums.length) {
+            list.add(new LinkedList<>(temp));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i] || (i > 0 && nums[i] == nums[i - 1]))    continue;
+            temp.add(nums[i]);
+            visited[i] = true;
+            permuteUniqueHelper(list, temp, nums, visited);
+            visited[i] = false;
+            temp.remove(temp.size() - 1);
+        }
+    }
+
+    /* 90. Subsets II */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        Arrays.sort(nums);
+        List<List<Integer>> list = new LinkedList<>();
+        subsetsWithDupHelper(list, new LinkedList<>(), nums, 0);
+        return list;
+    }
+    public void subsetsWithDupHelper(List<List<Integer>> list, List<Integer> temp, int[] nums, int start) {
+        if (start > nums.length)    return;
+        list.add(new LinkedList<>(temp));
+        for (int i = start; i < nums.length; i++) {
+            if (i > start && nums[i] == nums[i - 1])    continue;
+            temp.add(nums[i]);
+            subsetsWithDupHelper(list, temp, nums, i + 1);
+            temp.remove(temp.size() - 1);
+        }
+    }
+
+    /* 78. Subsets */
+    public List<List<Integer>> subsets(int[] nums) {
+        List<List<Integer>> list = new LinkedList<>();
+        subsetsHelper(list, new LinkedList<>(), nums, 0);
+        return list;
+    }
+    public void subsetsHelper(List<List<Integer>> list, List<Integer> temp, int[] nums, int start) {
+        if (start >= nums.length)    return;
+        list.add(new LinkedList<>(temp));
+        for (int i = start; i < nums.length; i++) {
+            temp.add(nums[i]);
+            subsetsHelper(list, temp, nums, i + 1);
+            temp.remove(temp.size() - 1);
+        }
+    }
+
     /* 87. Remove Node in Binary Search Tree */
     public TreeNode removeNode(TreeNode root, int value) {
         // write your code here
