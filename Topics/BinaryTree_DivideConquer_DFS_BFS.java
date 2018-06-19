@@ -11,7 +11,116 @@ public class BinaryTree_DivideConquer_DFS_BFS {
         TreeNode(int x) { val = x; }
     }
 
+    /* 131. Palindrome Partitioning */
+    public List<List<String>> partition(String s) {
+        List<List<String>> list = new LinkedList<>();
+        partitionHelper(list, s, new LinkedList<>(), 0);
+        return list;
+    }
+    public void partitionHelper(List<List<String>> list, String s, List<String> temp, int start) {
+        if (start >= s.length()) {
+            list.add(new LinkedList<>(temp));
+            return;
+        }
+        for (int i = start; i < s.length(); i++) {
+            if (!isPalindrome(s, start, i))  continue;
+            temp.add(s.substring(start, i + 1));
+            partitionHelper(list, s, temp, i + 1);
+            temp.remove(temp.size() - 1);
+        }
+    }
+    public boolean isPalindrome(String s, int start, int end) {
+        if (start == end)   return true;
+        while (start < end) {
+            if (s.charAt(start++) != s.charAt(end--))   return false;
+        }
+        return true;
+    }
+
+    /* 17. Letter Combinations of a Phone Number */
+    public List<String> letterCombinations(String digits) {
+        String[] dic = {" ","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz","+","#"};
+        List<String> list = new LinkedList<>();
+        list = letterCombinationsHelper(list, digits, dic, 0);
+        return list;
+    }
+    public List<String> letterCombinationsHelper(List<String> list, String digits,
+                                         String[] dics, int start) {
+        if (start >= digits.length())   return list;
+        List<String> temp = new LinkedList<>();
+        String dic = dics[digits.charAt(start) - '0'];
+        System.out.println(list + dic);
+        for (char c: dic.toCharArray()) {
+            if (list.size() == 0)   temp.add(c+"");
+            for (String s: list) {
+                s += c;
+                temp.add(new String(s));
+                s.substring(0, s.length() - 1);
+            }
+        }
+        list = new LinkedList<>(temp);
+        return letterCombinationsHelper(list, digits, dics, start + 1);
+    }
+
+    /* 216. Combination Sum III */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> list = new LinkedList<>();
+        combinationSum3Helper(list, new LinkedList<>(), k, n, 0, 1);
+        return list;
+    }
+    public void combinationSum3Helper(List<List<Integer>> list, List<Integer> temp,
+                                      int k, int n, int subsum, int start) {
+        if (temp.size() == k) {
+            if (subsum == n)    list.add(new LinkedList<>(temp));
+            return;
+        }
+        for (int i = start; i <= 9; i++) {
+            if (temp.contains(i)) continue;
+            temp.add(i);
+            subsum += i;
+            combinationSum3Helper(list, temp, k, n, subsum, i + 1);
+            temp.remove(temp.size() - 1);
+            subsum -= i;
+        }
+    }
+
+    /* 51. N-Queens */
     public List<List<String>> solveNQueens(int n) {
+        List<List<String>> list = new LinkedList<>();
+        solveNQueensHelper(list, new LinkedList<>(), n, new HashSet<>(), new HashSet<>());
+        return list;
+    }
+    public void solveNQueensHelper(List<List<String>> list, List<Integer> temp, int n,
+                                   Set<Integer> setR, Set<Integer> setL) {
+        if (temp.size() == n) {
+            list.add(drawChessPanel(temp, n));
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            int row = temp.size();
+            int col = i;
+            if (setL.contains(row - col) || setR.contains(row + col) || temp.contains(i))   continue;
+            setR.add(row + col);
+            setL.add(row - col);
+            temp.add(i);
+            solveNQueensHelper(list, temp, n, setR, setL);
+            temp.remove(temp.size() - 1);
+            setL.remove(row - col);
+            setR.remove(row + col);
+        }
+    }
+    public List<String> drawChessPanel(List<Integer> temp, int n) {
+        List<String> list = new LinkedList<>();
+        for (int i = 0; i < temp.size(); i++) {
+            StringBuilder sb = new StringBuilder();
+            for (int j = 0; j < n; j++) {
+                if (j == temp.get(i))   sb.append('Q');
+                else    sb.append('.');
+            }
+            list.add(sb.toString());
+        }
+        return list;
+    }
 
     /* 47. Permutations II */
     public List<List<Integer>> permuteUnique(int[] nums) {
