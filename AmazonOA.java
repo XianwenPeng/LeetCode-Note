@@ -55,9 +55,9 @@ public class AmazonOA {
         System.out.println(Arrays.toString(aoa.BSTToSortedArray(root)));
         System.out.println(aoa.findKthLargestInList(root, 2));
 
-        String s = "abc";
-        StringBuilder sb = new StringBuilder(s);
-        System.out.println(sb.reverse().toString());
+//        String s = "abc";
+//        StringBuilder sb = new StringBuilder(s);
+//        System.out.println(sb.reverse().toString());
     }
 
     /* 109. Convert Sorted List to Binary Search Tree */
