@@ -1,7 +1,7 @@
 package LeetCode;
 
 import java.util.*;
-public class AmazonOA {
+public class PracticesForJune25 {
     class RandomListNode {
         int label;
         RandomListNode next, random;
@@ -20,7 +20,7 @@ public class AmazonOA {
     }
 
     public static void main(String[] args) {
-        AmazonOA aoa = new AmazonOA();
+        PracticesForJune25 aoa = new PracticesForJune25();
 
         System.out.println("Most Frequently Used WordsS");
         String test1_1 = "Jack and Jill went to the market to buy bread and cheese. Cheese is Jack's and Jill's favorite food";
