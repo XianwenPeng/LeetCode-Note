@@ -1,6 +1,8 @@
 package LeetCode;
 
 import java.util.*;
+
+// Just done the phone screen on July 3rd
 public class PracticesForJune25 {
     class RandomListNode {
         int label;
