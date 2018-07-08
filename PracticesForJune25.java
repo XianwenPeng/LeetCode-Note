@@ -2,7 +2,7 @@ package LeetCode;
 
 import java.util.*;
 
-// Just done the phone screen on July 3rd
+// Just done the phone screen on July 3rd, waiting for response
 public class PracticesForJune25 {
     class RandomListNode {
         int label;
