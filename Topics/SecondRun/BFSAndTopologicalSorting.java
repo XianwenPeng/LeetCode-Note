@@ -12,15 +12,128 @@ public class BFSAndTopologicalSorting {
         }
     }
 
+    class Point {
+        int x;
+        int y;
+        Point() { x = 0; y = 0; }
+        Point(int a, int b) { x = a; y = b; }
+    }
+
     class UndirectedGraphNode {
         int label;
         ArrayList<UndirectedGraphNode> neighbors;
         UndirectedGraphNode(int x) { label = x; neighbors = new ArrayList<UndirectedGraphNode>(); }
-    };
+    }
+
+    class DirectedGraphNode {
+        int label;
+        ArrayList<DirectedGraphNode> neighbors;
+        DirectedGraphNode(int x) { label = x; neighbors = new ArrayList<DirectedGraphNode>(); }
+    }
 
     public static void main(String[] args) {
 
     }
+
+    /* 127. Topological Sorting */
+    public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
+        // write your code here
+        HashMap<DirectedGraphNode, Integer> inDegree = new HashMap<>();
+        Queue<DirectedGraphNode> queue = new LinkedList<>();
+        ArrayList<DirectedGraphNode> list = new ArrayList<>();
+
+        for (DirectedGraphNode node: graph) {
+            if (!inDegree.containsKey(node)) inDegree.put(node, 0);
+            for (DirectedGraphNode neighbor: node.neighbors) {
+                inDegree.put(neighbor, inDegree.getOrDefault(neighbor, 0) + 1);
+            }
+        }
+
+        for (DirectedGraphNode node: inDegree.keySet()) {
+            if (inDegree.get(node) == 0) {
+                queue.offer(node);
+            }
+        }
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                DirectedGraphNode node = queue.poll();
+                list.add(node);
+                for (DirectedGraphNode neighbor: node.neighbors) {
+                    inDegree.put(neighbor, inDegree.get(neighbor) - 1);
+                    if (inDegree.get(neighbor) == 0) {
+                        queue.offer(neighbor);
+                    }
+                }
+            }
+        }
+        return list;
+    }
+
+    /* 611. Knight Shortest Path */
+    public int shortestPath(boolean[][] grid, Point source, Point destination) {
+        // write your code here
+        if (grid == null || grid.length == 0)  return 0;
+        Queue<Point> queue = new LinkedList<>();
+        queue.offer(source);
+        int[][] dirs = {{1, 2}, {-1, 2}, {1, -2}, {-1, -2},
+                {2, 1}, {-2, 1}, {2, -1}, {-2, -1}};
+        int rLen = grid.length, cLen = grid[0].length, res = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Point cur = queue.poll();
+                if (cur.x == destination.x && cur.y == destination.y)   return res;
+                for (int[] dir: dirs) {
+                    int row = cur.x + dir[0];
+                    int col = cur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && !grid[row][col]) {
+                        Point next = new Point(row, col);
+                        queue.offer(next);
+                        grid[row][col] = true;
+                    }
+                }
+            }
+            res++;
+        }
+        return -1;
+    }
+
+    /* 433. Number of Islands */
+    public int numIslands(boolean[][] grid) {
+        // write your code here
+        if (grid == null || grid.length == 0)   return 0;
+        Queue<Cell> queue = new LinkedList<>();
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int rlen = grid.length, clen = grid[0].length, res = 0;
+        for (int i = 0; i < rlen; i++) {
+            for (int j = 0; j < clen; j++) {
+                if (grid[i][j] == true) {
+                    queue.offer(new Cell(i, j));
+                    while (!queue.isEmpty()) {
+                        Cell cell = queue.poll();
+                        int row = cell.row, col = cell.col;
+                        grid[row][col] = false;
+                        for (int[] dir: dirs) {
+                            if (row + dir[0] >= 0  && row + dir[0] < rlen && col + dir[1] >= 0 && col + dir[1] < clen && grid[row + dir[0]][col + dir[1]])
+                                queue.offer(new Cell(row + dir[0], col + dir[1]));
+                        }
+                    }
+                    res++;
+                }
+            }
+        }
+        return res;
+    }
+    public class Cell {
+        int row;
+        int col;
+        public Cell(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+
 
     /* 120. Word Ladder */
     public int ladderLength(String start, String end, Set<String> dict) {
