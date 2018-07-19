@@ -287,6 +287,48 @@ public class BFSAndTopologicalSorting {
         }
     }
 
+    /* 178. Graph Valid Tree */
+    public boolean validTree(int n, int[][] edges) {
+        // write your code here
+        HashMap<Integer, Set<Integer>> map = new HashMap<>();
+        for (int i = 0; i < n; i++)     map.put(i, new HashSet<>());
+        for (int[] edge: edges) {
+            map.get(edge[0]).add(edge[1]);
+            map.get(edge[1]).add(edge[0]);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        Set<Integer> visited = new HashSet<>();
+        queue.offer(0);
+        int visitCount = 0;
+        while (!queue.isEmpty()) {
+            int node = queue.poll();
+            if (visited.contains(node)) return false;
+            visited.add(node);
+            for (int next: map.get(node)) {
+                queue.offer(next);
+                map.get(next).remove(node);
+            }
+        }
+        return visited.size() == n;
+    }
+
+    public boolean validTreeUnionFind(int n, int[][] edges) {
+        // write your code here
+        int[] nums = new int[n];
+        Arrays.fill(nums, -1);
+        for (int[] edge: edges) {
+            int x = find(nums, edge[0]);
+            int y = find(nums, edge[1]);
+            if (x == y) return false;
+            nums[x] = y;
+        }
+        return edges.length == n - 1;
+    }
+    public int find(int[] nums, int i) {
+        if (nums[i] == -1)  return i;
+        return nums[i] = find(nums, nums[i]);
+    }
+
     /* 137. Clone Graph */
     public UndirectedGraphNode cloneGraph(UndirectedGraphNode node) {
         // write your code here
