@@ -35,6 +35,125 @@ public class BFSAndTopologicalSorting {
 
     }
 
+    /* 892. Alien Dictionary */
+    public String alienOrder(String[] words) {
+        // Write your code here
+        HashMap<Character, Set<Character>> map = constructMap(words);
+        HashMap<Character, Integer> inDegree = getInDegree(map);
+        Queue<Character> queue = new PriorityQueue<>();
+        for (Character ch: inDegree.keySet()) {
+            if (inDegree.get(ch) == 0)  queue.offer(ch);
+        }
+        StringBuilder sb = new StringBuilder();
+        while (!queue.isEmpty()) {
+            Character ch = queue.poll();
+            sb.append(ch);
+            for (Character next: map.get(ch)) {
+                inDegree.put(next, inDegree.get(next) - 1);
+                if (inDegree.get(next) == 0)    queue.offer(next);
+            }
+        }
+        if (sb.length() != inDegree.size()) return "";
+        return sb.toString();
+    }
+    public HashMap<Character, Integer> getInDegree(HashMap<Character, Set<Character>> map) {
+        HashMap<Character, Integer> inDegree = new HashMap<>();
+        for (Character ch: map.keySet()) {
+            inDegree.put(ch, 0);
+        }
+        for (Character ch: map.keySet()) {
+            for (Character next: map.get(ch)) {
+                inDegree.put(next, inDegree.get(next) + 1);
+            }
+        }
+        return inDegree;
+    }
+    public HashMap<Character, Set<Character>> constructMap(String[] words) {
+        HashMap<Character, Set<Character>> map = new HashMap<>();
+        for (int i = 0; i < words.length; i++) {
+            for (int j = 0; j < words[i].length(); j++) {
+                char c = words[i].charAt(j);
+                if (!map.containsKey(c))
+                    map.put(c, new HashSet<>());
+            }
+        }
+        for (int i = 0; i < words.length - 1; i++) {
+            int index = 0;
+            while (index < words[i].length() && index < words[i + 1].length()) {
+                if (words[i].charAt(index) != words[i + 1].charAt(index)) {
+                    map.get(words[i].charAt(index)).add(words[i + 1].charAt(index));
+                    break;
+                }
+                index++;
+            }
+        }
+        return map;
+    }
+
+    /* 616. Course Schedule II */
+    public int[] findOrder(int numCourses, int[][] prerequisites) {
+        // write your code here
+        HashMap<Integer, List<Integer>> preMap = new HashMap<>();
+        HashMap<Integer, Integer> inDegree = new HashMap<>();
+        for (int i = 0; i < numCourses; i ++) {
+            preMap.put(i, new LinkedList<>());
+            inDegree.put(i, 0);
+        }
+        for (int[] pre: prerequisites) {
+            preMap.get(pre[1]).add(pre[0]);
+            inDegree.put(pre[0], inDegree.get(pre[0]) + 1);
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int i = 0; i < numCourses; i++) {
+            if (inDegree.get(i) == 0)   queue.offer(i);
+        }
+        int[] res = new int[numCourses];
+        int steps = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int course = queue.poll();
+                for (int next: preMap.get(course)) {
+                    inDegree.put(next, inDegree.get(next) - 1);
+                    if (inDegree.get(next) == 0)    queue.offer(next);
+                }
+                res[steps] = course;
+                if (++steps == numCourses)  return res;
+            }
+        }
+        return new int[]{};
+    }
+
+    /* 615. Course Schedule */
+    public boolean canFinish(int numCourses, int[][] prerequisites) {
+        // write your code here
+        if (prerequisites.length == 0)  return true;
+        Queue<Integer> queue = new LinkedList<>();
+        HashMap<Integer, Integer> inDegree = new HashMap<>();
+        HashMap<Integer, LinkedList<Integer>> preMap = new HashMap<>();
+        for (int i = 0; i < numCourses; i++) {
+            preMap.put(i, new LinkedList<>());
+            inDegree.put(i, 0);
+        }
+        for (int[] prerequisite: prerequisites) {
+            inDegree.put(prerequisite[1], inDegree.getOrDefault(prerequisite[1], 0) + 1);
+            preMap.get(prerequisite[0]).add(prerequisite[1]);
+        }
+        for (int course: inDegree.keySet()) {
+            if (inDegree.get(course) == 0) queue.offer(course);
+        }
+        int visitCount = 0;
+        while (!queue.isEmpty()) {
+            int course = queue.poll();
+            visitCount++;
+            for (int next: preMap.get(course)) {
+                inDegree.put(next, inDegree.get(next) - 1);
+                if (inDegree.get(next) == 0)    queue.offer(next);
+            }
+        }
+        return visitCount == numCourses;
+    }
+
     /* 127. Topological Sorting */
     public ArrayList<DirectedGraphNode> topSort(ArrayList<DirectedGraphNode> graph) {
         // write your code here
