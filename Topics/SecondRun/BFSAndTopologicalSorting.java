@@ -35,6 +35,54 @@ public class BFSAndTopologicalSorting {
 
     }
 
+    /* 431. Connected Component in Undirected Graph */
+    public List<List<Integer>> connectedSet(List<UndirectedGraphNode> nodes) {
+        // write your code here
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        Set<UndirectedGraphNode> visited = new HashSet<>();
+        List<List<Integer>> list = new LinkedList<>();
+        for (UndirectedGraphNode node: nodes) {
+            List<Integer> subList = new LinkedList<>();
+            queue.offer(node);
+            while (!queue.isEmpty()) {
+                int size = queue.size();
+                for (int i = 0; i < size; i++) {
+                    UndirectedGraphNode cur = queue.poll();
+                    if (visited.contains(cur))  continue;
+                    visited.add(cur);
+                    subList.add(cur.label);
+                    for (UndirectedGraphNode next: cur.neighbors) {
+                        queue.offer(next);
+                    }
+                }
+            }
+            Collections.sort(subList);
+            if (subList.size() != 0)    list.add(subList);
+        }
+        return list;
+    }
+
+    /* 618. Search Graph Nodes */
+    public UndirectedGraphNode searchNode(ArrayList<UndirectedGraphNode> graph,
+                                          Map<UndirectedGraphNode, Integer> values,
+                                          UndirectedGraphNode node,
+                                          int target) {
+        // write your code here
+        Queue<UndirectedGraphNode> queue = new LinkedList<>();
+        Set<UndirectedGraphNode> visited = new HashSet<>();
+        queue.offer(node);
+        while (!queue.isEmpty()) {
+            UndirectedGraphNode cur = queue.poll();
+            if (visited.contains(cur))  continue;
+            visited.add(cur);
+            if (values.get(cur) == target)   return cur;
+            for (UndirectedGraphNode next: cur.neighbors) {
+                queue.offer(next);
+            }
+        }
+        return null;
+    }
+
     /* 892. Alien Dictionary */
     public String alienOrder(String[] words) {
         // Write your code here
