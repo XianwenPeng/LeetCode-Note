@@ -32,7 +32,262 @@ public class BFSAndTopologicalSorting {
     }
 
     public static void main(String[] args) {
+        BFSAndTopologicalSorting bfs = new BFSAndTopologicalSorting();
 
+        int[][] grid573 = {{0,1,0,0,0},{1,0,0,2,1},{0,1,0,0,0}};
+
+        System.out.println(bfs.shortestDistance(grid573));
+    }
+
+    /* 573. Build Post Office II */
+    // Optimization
+    public int shortestDistanceOptimization(int[][] grid) {
+        // write your code here
+        if (grid == null || grid.length == 0)   return 0;
+        int rLen = grid.length, cLen = grid[0].length, min = Integer.MAX_VALUE;
+        Set<PointPost> houses = new HashSet<>();
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                if (grid[i][j] == 1)    houses.add(new PointPost(i, j, houses.size()));
+            }
+        }
+        int[][][] distance = new int[houses.size()][rLen][cLen];
+        for (int i = 0; i < houses.size(); i++) {
+            for (int j = 0; j < rLen; j++) {
+                Arrays.fill(distance[i][j], Integer.MAX_VALUE);
+            }
+        }
+
+        for (PointPost house: houses) {
+            getDistance(distance, grid, house);
+        }
+
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                int subsum = 0;
+                boolean valid = true;
+                for (int k = 0; k < houses.size(); k++) {
+                    if (distance[k][i][j] == Integer.MAX_VALUE) {
+                        valid = false;
+                        break;
+                    }
+                    subsum += distance[k][i][j];
+                }
+                if (valid && subsum != 0)    min = Math.min(min, subsum);
+            }
+        }
+        return min == Integer.MAX_VALUE ? -1 : min;
+    }
+    public void getDistance(int[][][] distance, int[][] grid, PointPost cell) {
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        Queue<PointPost> queue = new LinkedList<>();
+        queue.offer(cell);
+        int len = 0, rLen = grid.length, cLen = grid[0].length;
+        boolean[][] visited = new boolean[rLen][cLen];
+        visited[cell.row][cell.col] = true;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            len++;
+            for (int i = 0; i < size; i++) {
+                PointPost cur = queue.poll();
+                for (int[] dir : dirs) {
+                    int row = cur.row + dir[0];
+                    int col = cur.col + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen
+                            && !visited[row][col]) {
+                        if (grid[row][col] == 0) {
+                            distance[cell.id][row][col] = len;
+                            queue.offer(new PointPost(row, col, -1));
+                            visited[row][col] = true;
+                        }
+                        else if (grid[row][col] == 2)
+                            distance[cell.id][row][col] = Integer.MAX_VALUE;
+                    }
+                }
+            }
+        }
+    }
+    public class PointPost {
+        int row;
+        int col;
+        int id;
+        public PointPost(int row, int col, int id) {
+            this.row = row;
+            this.col = col;
+            this.id = id;
+        }
+    }
+
+    // Brutal Force: Passed 77% Memory Limit Exceeded
+    public int shortestDistance(int[][] grid) {
+        // write your code here
+        if (grid == null || grid.length == 0)   return 0;
+        int rLen = grid.length, cLen = grid[0].length, min = Integer.MAX_VALUE, houses = 0;
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                if (grid[i][j] == 1)    houses++;
+            }
+        }
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                if (grid[i][j] == 0) {
+                    min = Math.min(min, bfs(grid, i, j, rLen, cLen, houses));
+                }
+            }
+        }
+        return min;
+    }
+    public int bfs(int[][] grid, int i, int j, int rLen, int cLen, int houses) {
+        Queue<PointPostOffice> queue = new LinkedList<>();
+        Set<Integer> set = new HashSet<>();
+        queue.offer(new PointPostOffice(i, j, 0));
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        int sumLen = 0, visitedHouses = 0;
+        while (!queue.isEmpty()) {
+            PointPostOffice cur = queue.poll();
+            set.add(cur.row * cLen + cur.col);
+            for (int[] dir : dirs) {
+                int row = cur.row + dir[0];
+                int col = cur.col + dir[1];
+                int len = cur.len + 1;
+                int hash = row * cLen + col;
+                if (row >= 0 && row < rLen && col >= 0 && col < cLen
+                        && grid[row][col] != 2 && !set.contains(hash)) {
+                    if (grid[row][col] == 1) {
+                        sumLen += len;
+                        visitedHouses++;
+                    } else if (grid[row][col] == 0) {
+                        queue.offer(new PointPostOffice(row, col, len));
+                    }
+                    set.add(hash);
+                }
+            }
+        }
+        return visitedHouses == houses ? sumLen : Integer.MAX_VALUE;
+    }
+    public class PointPostOffice {
+        int row;
+        int col;
+        int len;
+        public PointPostOffice(int row, int col, int len) {
+            this.row = row;
+            this.col = col;
+            this.len = len;
+        }
+    }
+
+    /* 598. Zombie in Matrix */
+    public int zombie(int[][] grid) {
+        // write your code here
+        if (grid == null || grid[0].length == 0) return 0;
+        int rLen = grid.length, cLen = grid[0].length;
+        int countPeople = 0, countTurned = 0, lastTurned = -1, days = 0;
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                if (grid[i][j] == 0)
+                    countPeople++;
+            }
+        }
+        Queue<Point> queue = new LinkedList<>();
+        int[][] dirs = {{1, 0}, {-1, 0}, {0, 1}, {0, -1}};
+        for (int i = 0; i < rLen; i++) {
+            for (int j = 0; j < cLen; j++) {
+                if (grid[i][j] == 1) {
+                    queue.offer(new Point(i, j));
+                }
+            }
+        }
+        while (!queue.isEmpty()) {
+            if (countTurned == countPeople) return days;
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                Point cur = queue.poll();
+                for (int[] dir : dirs) {
+                    int row = cur.x + dir[0];
+                    int col = cur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && grid[row][col] == 0) {
+                        grid[row][col] = 1;
+                        queue.offer(new Point(row, col));
+                        countTurned++;
+                    }
+                }
+            }
+            days++;
+        }
+        return countTurned == countPeople ? days : -1;
+    }
+
+    /* 605. Sequence Reconstruction */
+    public boolean sequenceReconstruction(int[] org, int[][] seqs) {
+        // write your code here
+        HashMap<Integer, Set<Integer>> graph = new HashMap<>();
+        HashMap<Integer, Integer> inDegree = new HashMap<>();
+        for (int i = 0; i < seqs.length; i++) {
+            if (seqs[i].length == 1) {
+                graph.put(seqs[i][0], new HashSet<>());
+                inDegree.put(seqs[i][0], 0);
+                continue;
+            }
+            for (int j = 0; j < seqs[i].length - 1; j++) {
+                if (!graph.containsKey(seqs[i][j])) {
+                    graph.put(seqs[i][j], new HashSet<>());
+                    inDegree.put(seqs[i][j], 0);
+                }
+                if (!graph.containsKey(seqs[i][j + 1])) {
+                    graph.put(seqs[i][j + 1], new HashSet<>());
+                    inDegree.put(seqs[i][j + 1], 0);
+                }
+                if (graph.get(seqs[i][j]).add(seqs[i][j + 1]))
+                    inDegree.put(seqs[i][j + 1], inDegree.get(seqs[i][j + 1]) + 1);
+            }
+        }
+        Queue<Integer> queue = new LinkedList<>();
+        for (int node: inDegree.keySet()) {
+            if (inDegree.get(node) == 0)    queue.offer(node);
+        }
+        int visitCount = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            if (size > 1)    return false;
+            int node = queue.poll();
+            if (node != org[visitCount])    return false;
+            visitCount++;
+            for (int next: graph.get(node)) {
+                inDegree.put(next, inDegree.get(next) - 1);
+                if (inDegree.get(next) == 0)    queue.offer(next);
+            }
+        }
+        return visitCount == org.length && visitCount == graph.size();
+    }
+
+    /* 323. Number of Connected Components in an Undirected Graph */
+    public int countComponents(int n, int[][] edges) {
+        Queue<Integer> queue = new LinkedList<>();
+        HashMap<Integer, Set<Integer>> adjs = new HashMap<>();
+        Set<Integer> visited = new HashSet<>();
+        int count = 0;
+        for (int i = 0; i < n; i++) adjs.put(i, new HashSet<>());
+        for (int[] edge: edges) {
+            adjs.get(edge[0]).add(edge[1]);
+            adjs.get(edge[1]).add(edge[0]);
+        }
+        for (int i = 0; i < n; i++) {
+            queue.offer(i);
+            if (!visited.contains(i)) count++;
+            while (!queue.isEmpty()) {
+                int size = queue.size();
+                for (int j = 0; j < size; j++) {
+                    int cur = queue.poll();
+                    if (visited.contains(cur))  continue;
+                    visited.add(cur);
+                    for (int next: adjs.get(cur)) {
+                        queue.offer(next);
+                        adjs.get(next).remove(cur);
+                    }
+                }
+            }
+        }
+        return count;
     }
 
     /* 431. Connected Component in Undirected Graph */
