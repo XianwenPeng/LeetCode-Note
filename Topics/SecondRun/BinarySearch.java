@@ -3,6 +3,68 @@ import java.util.*;
 
 public class BinarySearch {
 
+    /* 154. Find Minimum in Rotated Sorted Array II */
+    public int findMinII(int[] nums) {
+        return helper(nums, 0, nums.length - 1);
+    }
+    public int helper(int[] nums, int left, int right) {
+        if (left > right)   return Integer.MAX_VALUE;
+        int target = nums[right];
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < target) {
+                right = mid;
+            }
+            else if (nums[mid] > target) {
+                left = mid;
+            }
+            else {
+                int leftSmall = helper(nums, left, mid);
+                int rightSmall = helper(nums, mid, right);
+                return leftSmall < rightSmall ? leftSmall : rightSmall;
+            }
+        }
+        return nums[left] < nums[right] ? nums[left] : nums[right];
+    }
+
+    /* 159. Find Minimum in Rotated Sorted Array */
+    public int findMinOptimization(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0)   return -1;
+        int start = 0, end = nums.length - 1;
+        int target = nums[end];
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] <= target) {
+                end = mid;
+            }
+            else {
+                start = mid;
+            }
+        }
+        if (nums[start] <= nums[end])    return nums[start];
+        return nums[end];
+    }
+    public int findMin(int[] nums) {
+        // write your code here
+        if (nums == null || nums.length == 0)   return -1;
+        int start = 0, end = nums.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (nums[mid] < nums[start]) {
+                end = mid;
+            }
+            else if (nums[mid] < nums[end]) {
+                end = mid;
+            }
+            else {
+                start = mid;
+            }
+        }
+        if (nums[start] < nums[end])    return nums[start];
+        return nums[end];
+    }
+
     /* 447. Search in a Big Sorted Array */
     public int searchBigSortedArrayExponential(ArrayReader reader, int target) {
         // write your code here
