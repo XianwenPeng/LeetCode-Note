@@ -2,6 +2,48 @@ package LeetCode.Topics.SecondRun;
 import java.util.*;
 
 public class BinarySearch {
+
+    /* 447. Search in a Big Sorted Array */
+    public int searchBigSortedArrayExponential(ArrayReader reader, int target) {
+        // write your code here
+        int index = 1;
+        while (reader.get(index - 1) < target)  index *= 2;
+
+        int start = 0, end = index;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (reader.get(mid) < target)  {
+                start = mid;
+            }
+            else {
+                end = mid;
+            }
+        }
+        if (reader.get(start) == target)   return start;
+        if (reader.get(end) == target)     return end;
+        return -1;
+    }
+
+    public int searchBigSortedArray(ArrayReader reader, int target) {
+        // write your code here
+        int start = 0, end = start + 2;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (reader.get(mid) < target)  {
+                start = mid;
+                end *= 2;
+            }
+            else {
+                end = mid;
+            }
+        }
+        if (reader.get(start) == target)   return start;
+        if (reader.get(end) == target)     return end;
+        return -1;
+    }
+    public class ArrayReader {
+        public int get(int x)   {return x;}
+    }
     /* 460. Find K Closest Elements */
     public int[] kClosestNumbers(int[] A, int target, int k) {
         // write your code here
