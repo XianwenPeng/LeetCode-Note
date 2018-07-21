@@ -39,6 +39,147 @@ public class BFSAndTopologicalSorting {
         System.out.println(bfs.shortestDistance(grid573));
     }
 
+    /* 814. Shortest Path in Undirected Graph */
+    public int shortestPath(List<UndirectedGraphNode> graph, UndirectedGraphNode A, UndirectedGraphNode B) {
+        // Write your code here
+        Queue<UndirectedGraphNode> startQueue = new LinkedList<>();
+        Queue<UndirectedGraphNode> endQueue = new LinkedList<>();
+        Set<UndirectedGraphNode> startVisited = new HashSet<>();
+        Set<UndirectedGraphNode> endVisited = new HashSet<>();
+
+        startQueue.offer(A);
+        endQueue.offer(B);
+        startVisited.add(A);
+        endVisited.add(B);
+        int step = 0;
+        while (!startQueue.isEmpty() || !endQueue.isEmpty()) {
+            int startSize = startQueue.size();
+            int endSize = endQueue.size();
+            step++;
+            for (int i = 0; i < startSize; i++) {
+                UndirectedGraphNode node = startQueue.poll();
+                for (UndirectedGraphNode neighbor: node.neighbors) {
+                    if (startVisited.contains(neighbor))    continue;
+                    else if (endVisited.contains(neighbor)) return step;
+                    startQueue.offer(neighbor);
+                    startVisited.add(neighbor);
+                }
+            }
+            step++;
+            for (int i = 0; i < endSize; i++) {
+                UndirectedGraphNode node = endQueue.poll();
+                for (UndirectedGraphNode neighbor: node.neighbors) {
+                    if (endVisited.contains(neighbor))    continue;
+                    else if (startVisited.contains(neighbor)) return step;
+                    endQueue.offer(neighbor);
+                    endVisited.add(neighbor);
+                }
+            }
+        }
+        return -1;
+    }
+
+    /* 611. Knight Shortest Path Bidirectional BFS */
+    public int shortestPathBidirectionalBFS(boolean[][] grid, Point source, Point destination) {
+        // write your code here
+        if (grid == null || grid.length == 0) return -1;
+        int rLen = grid.length, cLen = grid[0].length, step = 0;
+        Queue<Point> startQueue = new LinkedList<>();
+        Queue<Point> endQueue = new LinkedList<>();
+        boolean[][] startVisited = new boolean[rLen][cLen];
+        boolean[][] endVisited = new boolean[rLen][cLen];
+        int[][] dirs = {{1, 2}, {1, -2}, {-1, 2}, {-1, -2}, {2, 1}, {2, -1}, {-2, 1}, {-2, -1}};
+        startQueue.offer(source);
+        endQueue.offer(destination);
+        startVisited[source.x][source.y] = true;
+        endVisited[destination.x][destination.y] = true;
+        while (!startQueue.isEmpty() || !endQueue.isEmpty()) {
+            int startSize = startQueue.size();
+            int endSize = endQueue.size();
+            step++;
+            for (int i = 0; i < startSize; i++) {
+                Point startCur = startQueue.poll();
+                for (int[] dir : dirs) {
+                    int row = startCur.x + dir[0];
+                    int col = startCur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && !grid[row][col]) {
+                        if (startVisited[row][col]) continue;
+                        else if (endVisited[row][col]) return step;
+                        startQueue.offer(new Point(row, col));
+                        startVisited[row][col] = true;
+
+                    }
+                }
+            }
+            step++;
+            for (int i = 0; i < endSize; i++) {
+                Point endCur = endQueue.poll();
+                for (int[] dir : dirs) {
+                    int row = endCur.x + dir[0];
+                    int col = endCur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && !grid[row][col]) {
+                        if (endVisited[row][col]) continue;
+                        else if (startVisited[row][col]) return step;
+                        endQueue.offer(new Point(row, col));
+                        endVisited[row][col] = true;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+    /* 630. Knight Shortest Path II */
+    public int shortestPath2(boolean[][] grid) {
+        // write your code here
+        if (grid == null || grid.length == 0)   return -1;
+        int rLen = grid.length, cLen = grid[0].length, step = 0;
+        Queue<Point> startQueue = new LinkedList<>();
+        Queue<Point> endQueue = new LinkedList<>();
+        boolean[][] startVisited = new boolean[rLen][cLen];
+        boolean[][] endVisited = new boolean[rLen][cLen];
+        int[][] dirs = {{1, 2}, {-1, 2}, {2, 1}, {-2, 1}};
+        startQueue.offer(new Point(0, 0));
+        endQueue.offer(new Point(rLen - 1, cLen - 1));
+        startVisited[0][0] = true;
+        endVisited[rLen - 1][cLen - 1] = true;
+        while (!startQueue.isEmpty() || !endQueue.isEmpty()) {
+            int startSize = startQueue.size();
+            int endSize = endQueue.size();
+            step++;
+            for (int i = 0; i < startSize; i++) {
+                Point startCur = startQueue.poll();
+                for (int[] dir: dirs) {
+                    int row = startCur.x + dir[0];
+                    int col = startCur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && !grid[row][col]) {
+                        if (startVisited[row][col]) continue;
+                        else if (endVisited[row][col])   return step;
+                        startQueue.offer(new Point(row, col));
+                        startVisited[row][col] = true;
+
+                    }
+                }
+            }
+
+            for (int i = 0; i < endSize; i++) {
+                Point endCur = endQueue.poll();
+                for (int[] dir: dirs) {
+                    int row = endCur.x + dir[0];
+                    int col = endCur.y + dir[1];
+                    if (row >= 0 && row < rLen && col >= 0 && col < cLen && !grid[row][col]) {
+                        if (endVisited[row][col]) continue;
+                        else if (startVisited[row][col])   return step;
+                        endQueue.offer(new Point(row, col));
+                        endVisited[row][col] = true;
+                    }
+                }
+            }
+        }
+        return -1;
+    }
+
+
     /* 573. Build Post Office II */
     // Optimization
     public int shortestDistanceOptimization(int[][] grid) {
