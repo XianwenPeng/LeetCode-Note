@@ -3,6 +3,273 @@ import java.util.*;
 
 public class BinarySearch {
 
+    public int minArea(char[][] image, int x, int y) {
+        // write your code here
+        int[][] bounds = new int[2][2];
+        bounds[0][0] = bounds[0][1] = x;
+        bounds[1][0] = bounds[1][1] = y;
+        bounds = dfs(image, x, y, new boolean[image.length],
+                new boolean[image[0].length], bounds);
+        int row = -1, col = -1;
+        // if (bounds[0][0] == -1 || bounds[0][1] == -1
+        //     || bounds[1][0] == -1 || bounds[1][1] == -1)
+        //     return 0;
+        row = bounds[0][1] - bounds[0][0] + 1;
+        col = bounds[1][1] - bounds[1][0] + 1;
+        return row * col;
+    }
+    public int[][] dfs(char[][] image, int x, int y,
+                       boolean[] visitedX, boolean[] visitedY, int[][] bounds) {
+        if (x < 0 || x >= image.length || y < 0 || y >= image[0].length
+                || (visitedX[x] && visitedY[y]) || image[x][y] == '0')
+            return bounds;
+        visitedX[x] = true;
+        visitedY[y] = true;
+        int[] row = rangeInRow(image, x, y);
+        int[] col = rangeInCol(image, x, y);
+        bounds[0][0] = bounds[0][0] == -1 ? row[0] : Math.min(bounds[0][0], row[0]);
+        bounds[0][1] = bounds[0][1] == -1 ? row[1] : Math.max(bounds[0][1], row[1]);
+
+        bounds[1][0] = bounds[1][0] == -1 ? col[0] : Math.min(bounds[1][0], col[0]);
+        bounds[1][1] = bounds[1][1] == -1 ? col[1] : Math.max(bounds[1][1], col[1]);
+
+        // System.out.println(Arrays.toString(bounds[0])+ ", "+Arrays.toString(bounds[1]));
+        // System.out.println(Arrays.toString(row)+ ": "+Arrays.toString(col));
+
+        bounds = dfs(image, x + 1, y, visitedX, visitedY, bounds);
+        bounds = dfs(image, x - 1, y, visitedX, visitedY, bounds);
+        bounds = dfs(image, x, y + 1, visitedX, visitedY, bounds);
+        bounds = dfs(image, x, y - 1, visitedX, visitedY, bounds);
+        return bounds;
+    }
+    public int[] rangeInCol(char[][] image, int x, int y) {
+        int row = x, upperBound = x, lowerBound = x;
+        while (image[row + 1][y] == '1')   {
+            lowerBound++;
+        }
+        row = x;
+        while (image[row - 1][y] == '1')   {
+            upperBound--;
+        }
+        return new int[] {upperBound, lowerBound};
+    }
+    public int[] rangeInRow(char[][] image, int x, int y) {
+        int col = x, leftBound = y, rightBound = x;
+        while (image[x][col + 1] == '1')   {
+            rightBound++;
+        }
+        col = x;
+        while (image[x][col - 1] == '1')   {
+            leftBound--;
+        }
+        return new int[] {leftBound, rightBound};
+    }
+
+    /* 462. Total Occurrence of Target */
+    public int totalOccurrence(int[] A, int target) {
+        // write your code here
+//        int[] a = ["0000000000000000000000001100111111110000000000000000000000000000000000000000000",
+//                   "0000000000000000000000000111111111110000000000000000000000000000000000000000000",
+//                   "0000000000000000000000000001111110110000000000000000000000000000000000000000000",
+//                   "0000000000000000000000000011111110100000000000000000000000000000000000000000000",
+//                   "0000000000000000000000001111111110000000000000000000000000000000000000000000000"};
+
+
+
+    if (A == null || A.length == 0) return 0;
+        int left = 0, right = A.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] >= target) {
+                right = mid;
+            }
+            else {
+                left = mid;
+            }
+        }
+        int leftBound = 0;
+        if (A[left] == target)  leftBound = left;
+        else if (A[right] == target) leftBound = right;
+        else    return 0;
+
+        left = 0;
+        right = A.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] <= target) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (A[right] == target) return right - leftBound + 1;
+        else if (A[left] == target) return left - leftBound + 1;
+        return 0;
+    }
+
+    /* 38. Search a 2D Matrix II */
+    public int searchMatrixII(int[][] matrix, int target) {
+        // write your code here
+        int r = matrix.length - 1;
+        int c = 0;
+        int count = 0;
+        while (r >= 0 && c < matrix[0].length) {
+            if (matrix[r][c] == target) {
+                count++;
+                r--;
+                c++;
+                continue;
+            }
+            if (matrix[r][c] < target) {
+                c++;
+            }
+            else {
+                r--;
+            }
+        }
+        return count;
+    }
+
+    /* 28. Search a 2D Matrix */
+    public boolean searchMatrix(int[][] matrix, int target) {
+        // write your code here
+        if (matrix == null || matrix.length == 0)   return false;
+        int left = 0, right = matrix.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (matrix[mid][0] == target)   return true;
+            if (matrix[mid][0] < target) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        int level = matrix[0].length;
+        if (target < matrix[right][0])  level = left;
+        else level = right;
+
+        left = 0;
+        right = matrix[level].length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (matrix[level][mid] == target)   return true;
+            if (matrix[level][mid] < target) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (matrix[level][left] == target || matrix[level][right] == target)
+            return true;
+        return false;
+    }
+
+    /* 61. Search for a Range */
+    public int[] searchRange(int[] A, int target) {
+        // write your code here
+        if (A == null || A.length == 0) return new int[] {-1, -1};
+        int left = 0, right = A.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] >= target) {
+                right = mid;
+            }
+            else{
+                left = mid;
+            }
+        }
+        int leftBound = -1, rightBound = -1;
+        if (A[left] == target)
+            leftBound = left;
+        else if (A[right] == target)
+            leftBound = right;
+
+        left = 0;
+        right = A.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (A[mid] <= target) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (A[right] == target)  rightBound = right;
+        else if (A[left] == target) rightBound = left;
+        return new int[] {leftBound, rightBound};
+    }
+
+    /* 162. Find Peak Element */
+    public int findPeakElement(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[mid + 1]) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        return nums[left] > nums[right] ? left : right;
+    }
+
+    /* 585. Maximum Number in Mountain Sequence */
+    public int mountainSequence(int[] nums) {
+        // write your code here
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] > nums[mid + 1]) {
+                right = mid;
+            } else {
+                left = mid;
+            }
+        }
+        return nums[left] > nums[right] ? nums[left] : nums[right];
+    }
+
+    public int mountainSequenceTwoMid(int[] nums) {
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid1 = left + (right - left) / 2;
+            int mid2 = right - (right - mid1) / 2;
+            if (nums[mid1] > nums[mid2]) {
+                right = mid2 - 1;
+            }
+            else if (nums[mid1] < nums[mid2]) {
+                left = mid1 + 1;
+            }
+            else {
+                left = mid1;
+                right = mid2;
+            }
+        }
+        return nums[left] > nums[right] ? nums[left] : nums[right];
+    }
+
+    public int mountainSequenceWorstON(int[] nums) {
+        return helperMountain(nums, 0, nums.length - 1);
+    }
+    public int helperMountain(int[] nums, int left, int right) {
+        int target = nums[right];
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] >= target) {
+                int leftHeighest = helper(nums, left, mid);
+                int rightHeighest = helper(nums, mid, right);
+                return leftHeighest > rightHeighest ? leftHeighest : rightHeighest;
+            } else {
+                left = mid;
+            }
+        }
+        return nums[left] > nums[right] ? nums[left] : nums[right];
+    }
+
     /* 154. Find Minimum in Rotated Sorted Array II */
     public int findMinII(int[] nums) {
         return helper(nums, 0, nums.length - 1);
