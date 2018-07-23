@@ -3,6 +3,100 @@ import java.util.*;
 
 public class BinarySearch {
 
+    /* 428. Pow(x, n) */
+    public double myPow(double x, int n) {
+        // write your code here
+        boolean neg = false;
+        if (n < 0) {
+            x = 1 / x;
+            n = - (n + 1);
+            neg = true;
+        }
+
+        double ans = 1, base = x;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans *= base;
+            }
+            base *= base;
+            n /= 2;
+        }
+
+        if (neg)    ans *= x;
+        return ans;
+    }
+
+    /* 140. Fast Power */
+    public int fastPower(int a, int b, int n) {
+        // write your code here
+        long base = a, ans = 1;
+        while (n > 0) {
+            if (n % 2 == 1) {
+                ans = ans * base % b;
+            }
+            n /= 2;
+            base = base * base % b;
+        }
+        return (int) ans % b;
+    }
+
+    /* 845. Greatest Common Divisor */
+    public int gcd(int a, int b) {
+        // write your code here
+        if (b != 0) {
+            return gcd(b, a % b);
+        }
+        else
+            return a;
+    }
+
+    /* 62. Search in Rotated Sorted Array */
+    public int search(int[] A, int target) {
+        // write your code here
+        if (A == null || A.length == 0) return -1;
+        int start = 0, end = A.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (A[mid] == target)   return mid;
+            if (A[mid] < A[start]) {
+                if (target <= A[end] && target > A[mid]){
+                    start = mid;
+                }
+                else {
+                    end = mid;
+                }
+            }
+            else {
+                if (target >= A[start] && target < A[mid]) {
+                    end = mid;
+                }
+                else {
+                    start = mid;
+                }
+            }
+        }
+        if (A[start] == target) return start;
+        if (A[end] == target)   return end;
+        return -1;
+    }
+
+    /* 75. Find Peak Element */
+    public int findPeak(int[] A) {
+        // write your code here
+        int start = 0, end = A.length - 1;
+        while (start + 1 < end) {
+            int mid = start + (end - start) / 2;
+            if (A[mid] < A[mid + 1]) {
+                start = mid;
+            }
+            else {
+                end = mid;
+            }
+        }
+        return A[start] > A[end] ? start : end;
+    }
+
+    /*
     public int minArea(char[][] image, int x, int y) {
         // write your code here
         int[][] bounds = new int[2][2];
@@ -63,20 +157,12 @@ public class BinarySearch {
             leftBound--;
         }
         return new int[] {leftBound, rightBound};
-    }
+    }*/
 
     /* 462. Total Occurrence of Target */
     public int totalOccurrence(int[] A, int target) {
         // write your code here
-//        int[] a = ["0000000000000000000000001100111111110000000000000000000000000000000000000000000",
-//                   "0000000000000000000000000111111111110000000000000000000000000000000000000000000",
-//                   "0000000000000000000000000001111110110000000000000000000000000000000000000000000",
-//                   "0000000000000000000000000011111110100000000000000000000000000000000000000000000",
-//                   "0000000000000000000000001111111110000000000000000000000000000000000000000000000"};
-
-
-
-    if (A == null || A.length == 0) return 0;
+        if (A == null || A.length == 0) return 0;
         int left = 0, right = A.length - 1;
         while (left + 1 < right) {
             int mid = left + (right - left) / 2;
