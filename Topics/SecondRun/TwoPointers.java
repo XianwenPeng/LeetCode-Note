@@ -3,6 +3,37 @@ import java.util.*;
 
 public class TwoPointers {
 
+    /* 373. Partition Array by Odd and Even */
+    public void partitionArray(int[] nums) {
+        int left = 0, right = nums.length - 1, i = 0;
+        while (left < right) {
+            while (left < right && nums[left] % 2 == 1)  left++;
+            while (left < right && nums[right] % 2 == 0)   right--;
+            swap(nums, left++, right--);
+        }
+    }
+    public void swap(int[] nums, int i, int j) {
+        int temp = nums[i];
+        nums[i] = nums[j];
+        nums[j] = temp;
+    }
+
+    /* 49. Sort Letters by Case */
+    public void sortLetters(char[] chars) {
+        int left = 0, right = chars.length - 1, i = 0;
+        while (left <= right) {
+            while (left <= right && Character.isLowerCase(chars[left]))    left++;
+            while (left <= right && Character.isUpperCase(chars[right]))    right--;
+            if (left <= right) {
+                char temp = chars[left];
+                chars[left] = chars[right];
+                chars[right] = temp;
+                left++;
+                right--;
+            }
+        }
+    }
+
     /* 5. Kth Largest Element */
     public int kthLargestElement(int k, int[] nums) {
         // write your code here
