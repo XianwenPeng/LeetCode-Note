@@ -3,6 +3,23 @@ import java.util.*;
 
 public class TwoPointers {
 
+    /* 148. Sort Colors */
+    public void sortColors(int[] nums) {
+        // write your code here
+        int i = 0, left = 0, right = nums.length - 1;
+        while (i <= right) {
+            if (nums[i] == 0) {
+                swap(nums, i++, left++);
+            }
+            else if (nums[i] == 1) {
+                i++;
+            }
+            else {
+                swap(nums, i, right--);
+            }
+        }
+    }
+
     /* 373. Partition Array by Odd and Even */
     public void partitionArray(int[] nums) {
         int left = 0, right = nums.length - 1, i = 0;
