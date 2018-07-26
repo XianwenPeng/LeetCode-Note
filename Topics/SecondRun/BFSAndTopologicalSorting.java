@@ -39,6 +39,79 @@ public class BFSAndTopologicalSorting {
         System.out.println(bfs.shortestDistance(grid573));
     }
 
+    /* 7. Serialize and Deserialize Binary Tree */
+    public String serializeBFS(TreeNode root) {
+        // write your code here
+        StringBuilder sb = new StringBuilder();
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                if (node == null)   sb.append("null,");
+                else {
+                    sb.append(node.val+",");
+                    queue.offer(node.left);
+                    queue.offer(node.right);
+                }
+            }
+            sb.append("#");
+        }
+        return sb.toString();
+    }
+
+    public TreeNode deserializeBFS(String data) {
+        // write your code here
+        String[] levels = data.split("#");
+        TreeNode dummy = new TreeNode(-1);
+        Queue<TreeNode> queue = new LinkedList<>();
+        int level = 0;
+        queue.offer(dummy);
+        while (!queue.isEmpty()) {
+            String[] nodes = levels[level++].split(",");
+            TreeNode node = null;
+            boolean right = false;
+            for (int i = 0; i < nodes.length; i++) {
+                if (i % 2 == 0) node = queue.poll();
+                int val = nodes[i].equals("null") ? -1
+                        : Integer.parseInt(nodes[i]);
+                if (!right) {
+                    node.left = val == -1 ? null : new TreeNode(val);
+                    if (val != -1)  queue.offer(node.left);
+                    right = true;
+                }
+                else {
+                    node.right = val == -1 ? null : new TreeNode(val);
+                    if (val != -1)  queue.offer(node.right);
+                    right = false;
+                }
+            }
+        }
+        return dummy.left;
+    }
+
+    /* 69. Binary Tree Level Order Traversal */
+    public List<List<Integer>> levelOrderBFS(TreeNode root) {
+        // write your code here
+        List<List<Integer>> list = new LinkedList<>();
+        if (root == null)   return list;
+        Queue<TreeNode> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            List<Integer> temp = new LinkedList<>();
+            for (int i = 0; i < size; i++) {
+                TreeNode node = queue.poll();
+                temp.add(node.val);
+                if (node.left != null)  queue.offer(node.left);
+                if (node.right != null) queue.offer(node.right);
+            }
+            list.add(temp);
+        }
+        return list;
+    }
+
     /* 814. Shortest Path in Undirected Graph */
     public int shortestPath(List<UndirectedGraphNode> graph, UndirectedGraphNode A, UndirectedGraphNode B) {
         // Write your code here
