@@ -11,6 +11,150 @@ public class TreeBasedDFS {
         }
     }
 
+    /* LogN 901. Closest Binary Search Tree Value II */
+    public List<Integer> closestKValuesLogN(TreeNode root, double target, int k) {
+        // write your code here
+        List<Integer> list = new LinkedList<>();
+        Stack<TreeNode> right = new Stack<>();
+        Stack<TreeNode> left = new Stack<>();
+        TreeNode node = root;
+        while (node != null) {
+            left.push(node);
+            if (node.val > target) {
+                node = node.left;
+            }
+            else {
+                node = node.right;
+            }
+        }
+        right.addAll(left);
+        if (target < left.peek().val) {
+            goGreater(left);
+        }
+        else {
+            goSmaller(right);
+        }
+
+        while (list.size() < k) {
+            if (right.isEmpty() ||
+                    !left.isEmpty() && Math.abs(left.peek().val - target) < Math.abs(right.peek().val - target)) {
+                list.add(left.peek().val);
+                goGreater(left);
+            }
+            else {
+                list.add(right.peek().val);
+                goSmaller(right);
+            }
+        }
+        return list;
+
+    }
+    private void goGreater(Stack<TreeNode> stack) {
+        TreeNode node = stack.peek();
+        if (node.left == null) {
+            node = stack.pop();
+            while (!stack.isEmpty() && stack.peek().left == node)
+                node = stack.pop();
+            return;
+        }
+        node = node.left;
+        while (node != null) {
+            stack.push(node);
+            node = node.right;
+        }
+    }
+    private void goSmaller(Stack<TreeNode> stack) {
+        TreeNode node = stack.peek();
+        if (node.right == null) {
+            node = stack.pop();
+            while (!stack.isEmpty() && stack.peek().right == node)
+                node = stack.pop();
+            return;
+        }
+        node = node.right;
+        while (node != null) {
+            stack.push(node);
+            node = node.left;
+        }
+    }
+
+    /* 901. Closest Binary Search Tree Value II */
+    public List<Integer> closestKValues(TreeNode root, double target, int k) {
+        // write your code here
+        List<Integer> list = new LinkedList<>();
+        dfs(root, target, k, list);
+        return list;
+    }
+    public void dfs(TreeNode root, double target, int k, List<Integer> list) {
+        if (root == null)   return;
+        dfs(root.left, target, k, list);
+        if (list.size() < k) {
+            list.add(root.val);
+        }
+        else if (Math.abs(root.val - target) < Math.abs(list.get(0) - target)) {
+            list.remove(0);
+            list.add(root.val);
+        }
+        dfs(root.right, target, k, list);
+    }
+
+    /* 900. Closest Binary Search Tree Value */
+    TreeNode resClosestBinary;
+    public int closestValue(TreeNode root, double target) {
+        // write your code here
+        if (root == null)   return res.val;
+        if (resClosestBinary == null
+                || Math.abs(resClosestBinary.val - target) > Math.abs(root.val - target))
+            resClosestBinary = root;
+        if (root.val < target) {
+            return closestValue(root.right, target);
+        }
+        else {
+            return closestValue(root.left, target);
+        }
+    }
+
+    /* 67. Binary Tree Inorder Traversal */
+    public List<Integer> inorderTraversal(TreeNode root) {
+        // write your code here
+        Stack<TreeNode> stack = new Stack<>();
+        List<Integer> list = new LinkedList<>();
+        while (root != null) {
+            stack.push(root);
+            root = root.left;
+        }
+        while (!stack.isEmpty()) {
+            TreeNode node = stack.peek();
+            list.add(node.val);
+            if (node.right == null) {
+                node = stack.pop();
+                while (!stack.isEmpty() && stack.peek().right == node) {
+                    node = stack.pop();
+                }
+            }
+            else {
+                node = node.right;
+                while (node != null) {
+                    stack.push(node);
+                    node = node.left;
+                }
+            }
+        }
+        return list;
+    }
+
+    /* 448. Inorder Successor in BST */
+    public TreeNode inorderSuccessor(TreeNode root, TreeNode p) {
+        // write your code here
+        if (root == null || p == null)   return null;
+        if (root.val <= p.val) {
+            return inorderSuccessor(root.right, p);
+        }
+        else {
+            TreeNode left = inorderSuccessor(root.left, p);
+            return left != null ? left : root;
+        }
+    }
 
     /* 86. Binary Search Tree Iterator */
     public class BSTIterator {

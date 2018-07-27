@@ -33,6 +33,89 @@ public class DFS {
         dfs.printList(node108);
     }
 
+    /* 87. Remove Node in Binary Search Tree */
+    public TreeNode removeNode(TreeNode root, int value) {
+        // write your code here
+        TreeNode dummy = new TreeNode(-1);
+        dummy.left = root;
+        TreeNode node = root, prev = dummy;
+        while (node != null) {
+            TreeNode temp = node;
+            if (node.val < value)   node = node.right;
+            else if (node.val > value)  node = node.left;
+            else    break;
+            prev = temp;
+        }
+        if (node == null)   return root;
+        deleteNode(prev, node);
+        return dummy.left;
+    }
+    private void deleteNode(TreeNode prev, TreeNode node) {
+        if (node.right == null) {
+            if (prev.left == node)
+                prev.left = node.left;
+            else
+                prev.right = node.left;
+        }
+        else {
+            TreeNode parent = node, cur = node.right;
+            while (cur.left != null) {
+                parent = cur;
+                cur = cur.left;
+            }
+
+            if (parent.left == cur)
+                parent.left = cur.right;
+            else
+                parent.right = cur.right;
+
+            if (prev.left == node)
+                prev.left = cur;
+            else
+                prev.right = cur;
+
+            cur.left = node.left;
+            cur.right = node.right;
+        }
+    }
+
+    /* 85. Insert Node in a Binary Search Tree */
+    public TreeNode insertNodeIterative(TreeNode root, TreeNode node) {
+        // write your code here
+        if (root == null) return node;
+        TreeNode cur = root, prev = null;
+        while (cur != null) {
+            prev = cur;
+            if (cur.val < node.val) cur = cur.right;
+            else cur = cur.left;
+        }
+        if (prev.val > node.val) prev.left = node;
+        else prev.right = node;
+        return root;
+    }
+
+    public TreeNode insertNode(TreeNode root, TreeNode node) {
+        // write your code here
+        if (root == null) return node;
+        if (root.val > node.val) root.left = insertNode(root.left, node);
+        else root.right = insertNode(root.right, node);
+        return root;
+    }
+
+    /* 11. Search Range in Binary Search Tree */
+    public List<Integer> searchRange(TreeNode root, int k1, int k2) {
+        // write your code here
+        List<Integer> list = new LinkedList<>();
+        dfs(root, k1, k2, list);
+        return list;
+    }
+    private void dfs(TreeNode root, int k1, int k2, List<Integer> list) {
+        if (root == null)   return;
+        dfs(root.left, k1, k2, list);
+        if (root.val >= k1 && root.val <= k2)   list.add(root.val);
+        dfs(root.right, k1, k2, list);
+    }
+
     /* 785. Is Graph Bipartite? */
     public boolean isBipartite(int[][] graph) {
         int[] colors = new int[graph.length];
