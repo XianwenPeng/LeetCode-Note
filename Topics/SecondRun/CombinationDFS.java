@@ -11,6 +11,28 @@ public class CombinationDFS {
         }
     }
 
+    /* 90. k Sum II */
+    public List<List<Integer>> kSumII(int[] A, int k, int targer) {
+        // write your code here
+        List<List<Integer>> list = new LinkedList<>();
+        dfs(A, k, targer, 0, list, new LinkedList<>());
+        return list;
+    }
+    private void dfs(int[] A, int k, int target, int index,
+                     List<List<Integer>> list, List<Integer> subList) {
+        if (target < 0 || k < 0)    return;
+        if (k == 0 && target == 0) {
+            list.add(new LinkedList<>(subList));
+            return;
+        }
+        for (int i = index; i < A.length; i++) {
+            if (i > index && A[i] == A[i - 1])  continue;
+            subList.add(A[i]);
+            dfs(A, k - 1, target - A[i], i + 1, list, subList);
+            subList.remove(subList.size() - 1);
+        }
+    }
+
     /* 153. Combination Sum II */
     public List<List<Integer>> combinationSum2(int[] num, int target) {
         // write your code here
