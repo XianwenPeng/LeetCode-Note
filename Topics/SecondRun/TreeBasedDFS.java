@@ -11,6 +11,45 @@ public class TreeBasedDFS {
         }
     }
 
+    /* 578. Lowest Common Ancestor III */
+    private boolean aFound = false, bFound = false;
+    public TreeNode lowestCommonAncestor3(TreeNode root, TreeNode A, TreeNode B) {
+        TreeNode res = dfs(root, A, B);
+        return aFound && bFound ? res : null;
+    }
+    private TreeNode dfs(TreeNode root, TreeNode A, TreeNode B) {
+        if (root == null)   return null;
+        if (root == A) {
+            aFound = true;
+        }
+        if (root == B) {
+            bFound = true;
+        }
+        TreeNode left = dfs(root.left, A, B);
+        TreeNode right = dfs(root.right, A, B);
+        if (root == A || root == B)   return root;
+
+        if (left != null && right != null)   return root;
+        if (left != null)   return left;
+        else    return right;
+    }
+
+    /* 93. Balanced Binary Tree */
+    private boolean res93;
+    public boolean isBalanced(TreeNode root) {
+        // write your code here
+        res93 = true;
+        dfs(root);
+        return res93;
+    }
+    public int dfs(TreeNode root) {
+        if (root == null)   return 0;
+        int left = dfs(root.left);
+        int right = dfs(root.right);
+        if (Math.abs(left - right) > 1) res93 = false;
+        return Math.max(left, right) + 1;
+    }
+
     /* LogN 901. Closest Binary Search Tree Value II */
     public List<Integer> closestKValuesLogN(TreeNode root, double target, int k) {
         // write your code here
