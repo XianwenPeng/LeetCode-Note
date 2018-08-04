@@ -11,6 +11,30 @@ public class CombinationDFS {
         }
     }
 
+    /* 10. String Permutation II */
+    public List<String> stringPermutation2(String str) {
+        // write your code here
+        List<String> list = new LinkedList<>();
+        char[] chs = str.toCharArray();
+        Arrays.sort(chs);
+        dfs(chs, list, new StringBuilder(), new boolean[str.length()]);
+        return list;
+    }
+    private void dfs(char[] chs, List<String> list, StringBuilder sb, boolean[] visited) {
+        if (sb.length() == chs.length) {
+            list.add(sb.toString());
+            return;
+        }
+        for (int i = 0; i < chs.length; i++) {
+            if (visited[i] || i > 0 && chs[i - 1] == chs[i] && !visited[i - 1])    continue;
+            sb.append(chs[i]);
+            visited[i] = true;
+            dfs(chs, list, sb, visited);
+            sb.deleteCharAt(sb.length() - 1);
+            visited[i] = false;
+        }
+    }
+
     /* 18. Subsets II */
     public List<List<Integer>> subsetsWithDup(int[] nums) {
         // write your code here
