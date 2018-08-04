@@ -11,6 +11,70 @@ public class CombinationDFS {
         }
     }
 
+    /* 154. Regular Expression Matching */
+    public boolean isMatchREMDP(String s, String p) {
+        // write your code here
+        int n = s.length();
+        int m = p.length();
+        boolean[][] match = new boolean[n + 1][m + 1];
+        match[0][0] = true;
+        for (int i = 1; i <= m; i++) {
+            if (p.charAt(i - 1) == '*' && i >= 2 && match[0][i - 2]) match[0][i] = true;
+        }
+        for (int i = 1; i <= n; i++) {
+            for (int j = 1; j <= m; j++) {
+                if (p.charAt(j - 1) == '*' && j - 2 >= 0) {
+                    if (j >= 2 && p.charAt(j - 2) != '.' && p.charAt(j - 2) != s.charAt(i - 1))
+                        match[i][j] = match[i][j - 2];
+                    else
+                        match[i][j] = match[i - 1][j] || match[i][j - 2] || match[i][j - 1];
+                } else {
+                    match[i][j] = (p.charAt(j - 1) == s.charAt(i - 1)
+                            || p.charAt(j - 1) == '.')
+                            && match[i - 1][j - 1];
+                }
+            }
+        }
+        return match[n][m];
+    }
+
+    public boolean isMatchRegularExpressionMatching(String s, String p) {
+        // write your code here
+        return dfsREM(s, p, 0, 0, new boolean[s.length()][p.length()], new boolean[s.length()][p.length()]);
+    }
+    private boolean dfsREM(String s, String p, int sIndex, int pIndex, boolean[][] visited, boolean[][] matched) {
+        if (pIndex == p.length())
+            return sIndex == s.length();
+        if (sIndex == s.length())
+            return allStarREM(p, pIndex);
+        if (visited[sIndex][pIndex])
+            return matched[sIndex][pIndex];
+        char chS = s.charAt(sIndex);
+        char chP = p.charAt(pIndex);
+        boolean match = false;
+        if (pIndex + 1 < p.length() && p.charAt(pIndex + 1) == '*') {
+            match = dfsREM(s, p, sIndex, pIndex + 2, visited, matched)
+                    || ((chS == chP || chP == '.') && dfsREM(s, p, sIndex + 1, pIndex, visited, matched));
+        }
+        else {
+            match = (chS == chP || chP == '.') && dfsREM(s, p, sIndex + 1, pIndex + 1, visited, matched);
+        }
+        matched[sIndex][pIndex] = match;
+        visited[sIndex][pIndex] = true;
+        return match;
+
+    }
+    private boolean allStarREM(String s, int index) {
+        while (index < s.length()) {
+            if (index + 1 >= s.length() || s.charAt(index + 1) != '*') {
+                return false;
+            }
+            index += 2;
+        }
+        return true;
+    }
+
+
     /* 192 Wildcard Matching - DP version */
     public boolean isMatchDP(String s, String p) {
         int n = s.length(), m = p.length();
