@@ -11,6 +11,25 @@ public class CombinationDFS {
         }
     }
 
+    /* 18. Subsets II */
+    public List<List<Integer>> subsetsWithDup(int[] nums) {
+        // write your code here
+        Arrays.sort(nums);
+        List<List<Integer>> list = new LinkedList<>();
+        dfsSubsetII(nums, 0, list, new LinkedList<>());
+        return list;
+    }
+    private void dfsSubsetII(int[] nums, int index, List<List<Integer>> list, List<Integer> sublist) {
+        if (index > nums.length)    return;
+        list.add(new LinkedList<>(sublist));
+        for (int i = index; i < nums.length; i++) {
+            if (i > index && nums[i] == nums[i - 1])    continue;
+            sublist.add(nums[i]);
+            dfsSubsetII(nums, i + 1, list, sublist);
+            sublist.remove(sublist.size() - 1);
+        }
+    }
+
     /* 17. Subsets */
     public List<List<Integer>> subsets(int[] nums) {
         // write your code here
