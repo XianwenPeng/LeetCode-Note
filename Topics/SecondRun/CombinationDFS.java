@@ -11,6 +11,46 @@ public class CombinationDFS {
         }
     }
 
+    /* 17. Subsets */
+    public List<List<Integer>> subsets(int[] nums) {
+        // write your code here
+        List<List<Integer>> list = new LinkedList<>();
+        Arrays.sort(nums);
+        dfs(nums, 0, list, new LinkedList<>());
+        return list;
+    }
+    private void dfs(int[] nums, int index, List<List<Integer>> list, List<Integer> sublist) {
+        if (index > nums.length) {
+            return;
+        }
+        list.add(new LinkedList<>(sublist));
+        for (int i = index; i < nums.length; i++) {
+            sublist.add(nums[i]);
+            dfs(nums, i + 1, list, sublist);
+            sublist.remove(sublist.size() - 1);
+        }
+    }
+
+    /* 152. Combinations */
+    public List<List<Integer>> combine(int n, int k) {
+        // write your code here
+        List<List<Integer>> list = new LinkedList<>();
+        dfs(n, k, 1, list, new LinkedList<>());
+        return list;
+    }
+    private void dfs(int n, int k, int index,
+                     List<List<Integer>> list, List<Integer> sublist) {
+        if (sublist.size() == k) {
+            list.add(new LinkedList<>(sublist));
+            return;
+        }
+        for (int i = index; i <= n; i++) {
+            sublist.add(i);
+            dfs(n, k, i + 1, list, sublist);
+            sublist.remove(sublist.size() - 1);
+        }
+    }
+
     /* 582. Word Break II */
     public List<String> wordBreak(String s, Set<String> wordDict) {
         // write your code here
