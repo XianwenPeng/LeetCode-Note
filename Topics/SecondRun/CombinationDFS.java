@@ -11,6 +11,34 @@ public class CombinationDFS {
         }
     }
 
+    /* 582. Word Break II */
+    public List<String> wordBreak(String s, Set<String> wordDict) {
+        // write your code here
+        List<String> list = new LinkedList<>();
+        Map<String, List<String>> map = new HashMap<>();
+        return dfs(s, wordDict, map);
+    }
+    private List<String> dfs(String s, Set<String> wordDict,
+                             Map<String, List<String>> map) {
+        if (map.containsKey(s))    return map.get(s);
+        List<String> res = new LinkedList<>();
+        if (wordDict.contains(s))   res.add(s);
+        for (int i = 0; i < s.length(); i++) {
+            String s1 = s.substring(0, i + 1);
+            String s2 = s.substring(i + 1);
+            if (!wordDict.contains(s1))    continue;
+            List<String> s2List = dfs(s2, wordDict, map);
+            for (String str: s2List) {
+                if (str == "")
+                    res.add(s1);
+                else
+                    res.add(s1 + " " + str);
+            }
+        }
+        map.put(s, res);
+        return res;
+    }
+
     /* 154. Regular Expression Matching */
     public boolean isMatchREMDP(String s, String p) {
         // write your code here
