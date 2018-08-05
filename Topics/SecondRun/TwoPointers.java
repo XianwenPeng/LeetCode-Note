@@ -3,6 +3,33 @@ import java.util.*;
 
 public class TwoPointers {
 
+    /* 884. Decoded String at Index */
+    public String decodeAtIndex(String S, int K) {
+        long len = 0;
+        char[] chs = S.toCharArray();
+        for (int i = 0; i < chs.length; i++) {
+            if (Character.isLetter(chs[i]))
+                len++;
+            else if (Character.isDigit(chs[i]))
+                len *= chs[i] - '0';
+        }
+        long longk = (long) K;
+        for (int i = chs.length - 1; i >= 0; i--) {
+            if (Character.isLetter(chs[i])) {
+                if (len == longk) return chs[i] + "";
+                len--;
+            } else if (Character.isDigit(chs[i])) {
+                len /= chs[i] - '0';
+                if (len < longk) {
+                    if (len == 0) return chs[i] + "";
+                    longk %= len;
+                    if (longk == 0) longk = len;
+                }
+            }
+        }
+        return "";
+    }
+
     /* 885. Boats to Save People */
     public int numRescueBoats(int[] people, int limit) {
         Arrays.sort(people);
