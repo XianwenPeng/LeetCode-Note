@@ -3,6 +3,27 @@ import java.util.*;
 
 public class TwoPointers {
 
+    /* 885. Boats to Save People */
+    public int numRescueBoats(int[] people, int limit) {
+        Arrays.sort(people);
+        int count = 0;
+        int left = 0, right = people.length - 1;
+        while (left <= right) {
+            if (left == right) {
+                count++;
+                left++;
+            } else if (people[left] + people[right] <= limit) {
+                left++;
+                right--;
+                count++;
+            } else {
+                right--;
+                count++;
+            }
+        }
+        return count;
+    }
+
     /* 148. Sort Colors */
     public void sortColors(int[] nums) {
         // write your code here
