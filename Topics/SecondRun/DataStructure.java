@@ -3,6 +3,65 @@ import java.util.*;
 
 public class DataStructure {
 
+    /* 960. First Unique Number in a Stream II */
+    public class DataStream {
+        private class Node {
+            int val;
+            Node next;
+            public Node(int val) {
+                this.val = val;
+            }
+        }
+        Node head, tail;
+        Map<Integer, Node> prevs;
+        Set<Integer> dup;
+        public DataStream(){
+            // do intialization if necessary
+            head = new Node(-1);
+            tail = head;
+            prevs = new HashMap<>();
+            dup = new HashSet<>();
+        }
+        /**
+         * @param num: next number in stream
+         * @return: nothing
+         */
+        public void add(int num) {
+            // write your code here
+            if (dup.contains(num))  return;
+            if (prevs.containsKey(num)) {
+                Node node = prevs.get(num);
+                removeNode(node);
+                prevs.remove(num);
+                dup.add(num);
+                return;
+            }
+            Node node = new Node(num);
+            prevs.put(num, tail);
+            tail.next = node;
+            tail = node;
+        }
+
+        public void removeNode(Node node) {
+            node.next = node.next.next;
+            if (node.next == null) {
+                tail = node;
+            }
+            else {
+                prevs.put(node.next.val, node);
+            }
+        }
+
+        /**
+         * @return: the first unique number in stream
+         */
+        public int firstUnique() {
+            // write your code here
+            if (head == tail)   return -1;
+            return head.next.val;
+        }
+    }
+
     /* 526. Load Balancer */
     public class LoadBalancer {
         HashMap<Integer, Integer> idToPos;
