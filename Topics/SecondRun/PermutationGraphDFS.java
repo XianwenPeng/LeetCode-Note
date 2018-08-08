@@ -3,6 +3,27 @@ import java.util.*;
 
 public class PermutationGraphDFS {
 
+    public List<List<Integer>> permute(int[] nums) {
+        // write your code here
+        List<List<Integer>> res = new LinkedList<>();
+        dfs(res, new LinkedList<>(), nums, new boolean[nums.length]);
+        return res;
+    }
+    private void dfs(List<List<Integer>> res, List<Integer> list, int[] nums, boolean[] visited) {
+        if (list.size() == nums.length) {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i] || i > 0 && nums[i - 1] == nums[i] && !visited[i - 1]) continue;
+            list.add(nums[i]);
+            visited[i] = true;
+            dfs(res, list, nums, visited);
+            list.remove(list.size() - 1);
+            visited[i] = false;
+        }
+    }
+
     /* 425. Letter Combinations of a Phone Number */
     public List<String> letterCombinations(String digits) {
         // write your code here

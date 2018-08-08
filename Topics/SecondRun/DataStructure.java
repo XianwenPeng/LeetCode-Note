@@ -2,6 +2,218 @@ package LeetCode.Topics.SecondRun;
 import java.util.*;
 
 public class DataStructure {
+    public class ListNode {
+        int val;
+        ListNode next;
+        ListNode(int val) {
+            this.val = val;
+            this.next = null;
+        }
+    }
+    class Point {
+        int x;
+        int y;
+        Point() { x = 0; y = 0; }
+        Point(int a, int b) { x = a; y = b; }
+    }
+
+
+    /* 545. Top k Largest Numbers II */
+    public class Solution {
+        Queue<Integer> pq;
+        int size;
+        /*
+        * @param k: An integer
+        */public Solution(int k) {
+            // do intialization if necessary
+            pq = new PriorityQueue<>();
+            size = k;
+        }
+
+        /*
+         * @param num: Number to be added
+         * @return: nothing
+         */
+        public void add(int num) {
+            // write your code here
+            if (pq.size() < size) {
+                pq.offer(num);
+                return;
+            }
+            if (pq.peek() < num) {
+                pq.poll();
+                pq.offer(num);
+            }
+        }
+
+        /*
+         * @return: Top k element
+         */
+        public List<Integer> topk() {
+            // write your code here
+            List<Integer> res = new ArrayList<>();
+            Iterator it = pq.iterator();
+            while (it.hasNext()) {
+                // int num = ;
+                res.add((Integer)it.next());
+            }
+            Collections.sort(res, Collections.reverseOrder());
+            return res;
+        }
+    }
+
+    /* 612. K Closest Points */
+    public Point[] kClosest(Point[] points, Point origin, int k) {
+        // write your code here
+        HashMap<Point, Double> pointToDistance = new HashMap<>();
+        Queue<Point> pq = new PriorityQueue<>((p1, p2) -> {
+            double diff = pointToDistance.get(p2) - pointToDistance.get(p1);
+            if (diff == 0) {
+                if (p1.x != p2.x)   return p2.x - p1.x;
+                else    return p2.y - p1.y;
+            }
+            return diff < 0 ? -1 : 1;
+        });
+        for (Point point: points) {
+            double distance = distance(origin, point);
+            if (pq.size() == k) {
+                if (distance < pointToDistance.get(pq.peek())) {
+                    pointToDistance.remove(pq.poll());
+                    pointToDistance.put(point, distance);
+                    pq.offer(point);
+                }
+            }
+            else {
+                pointToDistance.put(point, distance);
+                pq.offer(point);
+            }
+        }
+        Point[] res = new Point[k];
+        for (int i = k - 1; i >= 0; i--) {
+            res[i] = pq.poll();
+        }
+        return res;
+    }
+    private double distance(Point origin, Point point) {
+        return Math.sqrt((origin.x - point.x) * (origin.x - point.x) + (origin.y - point.y) * (origin.y - point.y));
+    }
+
+    /* 104. Merge K Sorted Lists */
+    public class Solution {
+        public ListNode mergeKListsI(List<ListNode> lists) {
+            if (lists == null || lists.size() == 0) return null;
+            while (lists.size() > 1) {
+                List<ListNode> newList = new LinkedList<>();
+                for (int i = 0; i < lists.size() - 1; i+=2) {
+                    ListNode node = merge(lists.get(i), lists.get(i + 1));
+                    newList.add(node);
+                }
+                if (lists.size() % 2 == 1) {
+                    newList.add(lists.get(lists.size() - 1));
+                }
+                lists = newList;
+            }
+            return lists.get(0);
+        }
+        private ListNode merge(ListNode n1, ListNode n2) {
+            ListNode dummy = new ListNode(-1);
+            ListNode tail = dummy;
+            while (n1 != null && n2 != null) {
+                if (n1.val < n2.val) {
+                    tail.next = n1;
+                    n1 = n1.next;
+                }
+                else {
+                    tail.next = n2;
+                    n2 = n2.next;
+                }
+                tail = tail.next;
+            }
+            if (n1 != null) {
+                tail.next = n1;
+            }
+            else {
+                tail.next = n2;
+            }
+            return dummy.next;
+        }
+
+         public ListNode mergeKListsII(List<ListNode> lists) {
+             if (lists == null || lists.size() == 0) return null;
+             return divideLists(lists, 0, lists.size() - 1);
+         }
+         private ListNode divideLists(List<ListNode> lists, int start, int end) {
+             if (start == end)   return lists.get(start);
+             int mid = start + (end - start) / 2;
+             ListNode left = divideLists(lists, start, mid);
+             ListNode right = divideLists(lists, mid + 1, end);
+             return mergeTwoLists(left, right);
+         }
+         private ListNode mergeTwoLists(ListNode l1, ListNode l2) {
+             ListNode dummy = new ListNode(-1);
+             ListNode tail = dummy;
+             while (l1 != null && l2 != null) {
+                 if (l1.val > l2.val) {
+                     tail.next = l2;
+                     tail = tail.next;
+                     l2 = l2.next;
+                 }
+                 else {
+                     tail.next = l1;
+                     tail = tail.next;
+                     l1 = l1.next;
+                 }
+             }
+             if (l1 != null) {
+                 tail.next = l1;
+             }
+             else {
+                 tail.next = l2;
+             }
+             return dummy.next;
+         }
+
+         public ListNode mergeKListsIII(List<ListNode> lists) {
+             // write your code here
+             Queue<ListNode> queue = new PriorityQueue<>((n1, n2) -> {
+                 return n1.val - n2.val;
+             });
+             for (ListNode node: lists) {
+                 if (node != null) {
+                     queue.offer(node);
+                 }
+             }
+             ListNode dummy = new ListNode(-1);
+             ListNode cur = dummy;
+             while (!queue.isEmpty()) {
+                 cur.next = queue.poll();
+                 cur = cur.next;
+                 if (cur.next != null) {
+                     queue.offer(cur.next);
+                 }
+             }
+             return dummy.next;
+         }
+    }
+
+    /* 4. Ugly Number II */
+    public int nthUglyNumber(int n) {
+        // write your code here
+        Queue<Long> pq = new PriorityQueue<>();
+        Set<Long> generated = new HashSet<>();
+        long[] nums = {2,3,5};
+        pq.offer(Long.valueOf(1));
+        while (--n > 0) {
+            long cur = pq.poll();
+            for (int i = 0; i < nums.length; i++) {
+                if (!generated.contains(cur * nums[i])) {
+                    pq.offer(cur * nums[i]);
+                    generated.add(cur * nums[i]);
+                }
+            }
+        }
+        return pq.poll().intValue();
+    }
 
     /* 960. First Unique Number in a Stream II */
     public class DataStream {
