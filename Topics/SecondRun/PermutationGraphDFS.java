@@ -3,6 +3,59 @@ import java.util.*;
 
 public class PermutationGraphDFS {
 
+    /* 34. N-Queens II */
+    int count = 0;
+    public int totalNQueens(int n) {
+        // write your code here
+        dfs(n, new LinkedList<>());
+        return count;
+    }
+    private void dfs(int n, List<Integer> list) {
+        if (list.size() == n) {
+            count++;
+            return;
+        }
+        for (int i = 0; i < n; i++) {
+            if (!isValidQueen(list, i)) continue;
+            list.add(i);
+            dfs(n, list);
+            list.remove(list.size() - 1);
+        }
+    }
+    private boolean isValidQueen(List<Integer> list, int col) {
+        int row = list.size();
+        for (int i = 0; i < list.size(); i++) {
+            if (list.get(i) == col)   return false;
+            if (list.get(i) + i == col + row)   return false;
+            if (list.get(i) - i == col - row)   return false;
+        }
+        return true;
+    }
+
+    /* 16. Permutations II */
+    public List<List<Integer>> permuteUnique(int[] nums) {
+        // write your code here
+        List<List<Integer>> res = new LinkedList<>();
+        Arrays.sort(nums);
+        dfsII(res, new LinkedList<>(), nums, new boolean[nums.length]);
+        return res;
+    }
+    private void dfsII(List<List<Integer>> res, List<Integer> list, int[] nums, boolean[] visited) {
+        if (list.size() == nums.length) {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = 0; i < nums.length; i++) {
+            if (visited[i] || i > 0 && nums[i] == nums[i - 1] && !visited[i - 1])    continue;
+            list.add(nums[i]);
+            visited[i] = true;
+            dfsII(res, list, nums, visited);
+            list.remove(list.size() - 1);
+            visited[i] = false;
+        }
+    }
+
+    /* 15. Permutations */
     public List<List<Integer>> permute(int[] nums) {
         // write your code here
         List<List<Integer>> res = new LinkedList<>();

@@ -99,7 +99,7 @@ public class DataStructure {
     }
 
     /* 104. Merge K Sorted Lists */
-    public class Solution {
+    public class SolutionKMerge {
         public ListNode mergeKListsI(List<ListNode> lists) {
             if (lists == null || lists.size() == 0) return null;
             while (lists.size() > 1) {
