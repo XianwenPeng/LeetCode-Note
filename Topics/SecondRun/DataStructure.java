@@ -17,6 +17,108 @@ public class DataStructure {
         Point(int a, int b) { x = a; y = b; }
     }
 
+    /* 40. Implement Queue by Two Stacks */
+    public class MyQueue {
+        Stack<Integer> s1, s2;
+
+        public MyQueue() {
+            // do intialization if necessary
+            s1 = new Stack<>();
+            s2 = new Stack<>();
+        }
+
+        /*
+         * @param element: An integer
+         * @return: nothing
+         */
+        public void push(int element) {
+            // write your code here
+            s2.push(element);
+        }
+
+        /*
+         * @return: An integer
+         */
+        public int pop() {
+            // write your code here
+            if (s1.isEmpty()) {
+                swapStacks();
+            }
+            return s1.pop();
+        }
+
+        /*
+         * @return: An integer
+         */
+        public int top() {
+            // write your code here
+            if (s1.isEmpty()) {
+                swapStacks();
+            }
+            return s1.peek();
+        }
+
+        public void swapStacks() {
+            while (s2.size() > 0) {
+                s1.push(s2.pop());
+            }
+        }
+    }
+
+    /* 494. Implement Stack by Two Queues */
+    public class MyStack {
+        Queue<Integer> q1 = new LinkedList<>();
+        Queue<Integer> q2 = new LinkedList<>();
+
+        /*
+         * @param x: An integer
+         * @return: nothing
+         */
+        public void push(int x) {
+            // write your code here
+            q1.offer(x);
+        }
+
+        /*
+         * @return: nothing
+         */
+        public void pop() {
+            // write your code here
+            while (q1.size() > 1) {
+                q2.offer(q1.poll());
+            }
+            q1.poll();
+            swapQueues();
+        }
+
+        /*
+         * @return: An integer
+         */
+        public int top() {
+            // write your code here
+            while (q1.size() > 1) {
+                q2.offer(q1.poll());
+            }
+            int res = q1.poll();
+            q2.offer(res);
+            swapQueues();
+            return res;
+        }
+
+        /*
+         * @return: True if the stack is empty
+         */
+        public boolean isEmpty() {
+            // write your code here
+            return q1.isEmpty();
+        }
+
+        public void swapQueues() {
+            Queue<Integer> temp = q1;
+            q1 = q2;
+            q2 = temp;
+        }
+    }
 
     /* 545. Top k Largest Numbers II */
     public class Solution {
