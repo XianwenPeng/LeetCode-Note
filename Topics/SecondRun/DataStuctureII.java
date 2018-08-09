@@ -10,6 +10,127 @@ public class DataStuctureII {
         }
     }
 
+    /* Heap O(nklogk + knlogn) 793. Intersection of Arrays */
+    private class Pair {
+        int row;
+        int col;
+        public Pair(int row, int col) {
+            this.row = row;
+            this.col = col;
+        }
+    }
+    public int intersectionOfArraysII(int[][] arrs) {
+        Queue<Pair> heap = new PriorityQueue<>((p1, p2) -> {
+            return arrs[p1.row][p1.col] - arrs[p2.row][p2.col];
+        });
+        for (int i = 0; i < arrs.length; i++) {
+            Arrays.sort(arrs[i]);
+            if (arrs[i].length > 0)
+                heap.offer(new Pair(i, 0));
+        }
+        int count = 0, res = 0, lastVisited = 0;
+        while(!heap.isEmpty()) {
+            Pair pair = heap.poll();
+            if (count == 0 || arrs[pair.row][pair.col] != lastVisited) {
+                if (count == arrs.length)   res++;
+                count = 1;
+                lastVisited = arrs[pair.row][pair.col];
+            }
+            else {
+                count++;
+            }
+
+            pair.col++;
+            if (pair.col < arrs[pair.row].length) {
+                heap.offer(pair);
+            }
+        }
+        if (count == arrs.length)   res++;
+        return res;
+    }
+
+    /* O(nk) 793. Intersection of Arrays */
+    public int intersectionOfArrays(int[][] arrs) {
+        // write your code here
+        int count = 0;
+        int[] indexes = new int[arrs.length];
+        for (int[] arr: arrs) Arrays.sort(arr);
+        boolean ended = false;
+        while (!ended) {
+            for (int i = 0; i < indexes.length; i++) {
+                if (indexes[i] >= arrs[i].length) {
+                    ended = true;
+                    return count;
+                }
+            }
+            if (foundSame(indexes, arrs))    count++;
+        }
+        return count;
+    }
+    private boolean foundSame(int[] indexes, int[][] arrs) {
+        int min = arrs[0][indexes[0]], minPos = 0, first = min;
+        boolean same = true;
+        for (int i = 0; i < indexes.length; i++) {
+            if (arrs[i][indexes[i]] != first)    same = false;
+            if (arrs[i][indexes[i]] < min) {
+                min = arrs[i][indexes[i]];
+                minPos = i;
+            }
+        }
+        if (!same) indexes[minPos]++;
+        else {
+            for (int i = 0; i < indexes.length; i++) {
+                indexes[i]++;
+            }
+        }
+        return same;
+    }
+
+    /* 548. Intersection of Two Arrays II */
+    public int[] intersectionII(int[] nums1, int[] nums2) {
+        // write your code here
+        List<Integer> list = new LinkedList<>();
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int i = 0, j = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums1[i] < nums2[j])    i++;
+            else if (nums1[i] > nums2[j])   j++;
+            else {
+                list.add(nums1[i]);
+                i++;
+                j++;
+            }
+        }
+        int[] res = new int[list.size()];
+        for (i = 0; i < res.length; i++)
+            res[i] = list.get(i);
+        return res;
+    }
+
+    /* 547. Intersection of Two Arrays */
+    public int[] intersection(int[] nums1, int[] nums2) {
+        int[] temp = new int[nums1.length];
+        Arrays.sort(nums1);
+        Arrays.sort(nums2);
+        int i = 0, j = 0, index = 0;
+        while (i < nums1.length && j < nums2.length) {
+            if (nums1[i] < nums2[j])  i++;
+            else if (nums1[i] > nums2[j]) j++;
+            else {
+                if (index == 0 || index > 0 && nums1[i] != temp[index - 1])
+                    temp[index++] = nums1[i];
+                i++;
+                j++;
+            }
+        }
+        int[] res = new int[index];
+        for (i = 0; i < index; i++) {
+            res[i] = temp[i];
+        }
+        return res;
+    }
+
     /* O(nklogk) O(k) 577. Merge K Sorted Interval Lists */
     private class Pair {
         int row;
