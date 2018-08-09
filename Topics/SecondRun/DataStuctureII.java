@@ -10,6 +10,24 @@ public class DataStuctureII {
         }
     }
 
+    /* 654. Sparse Matrix Multiplication */
+    public int[][] multiply(int[][] A, int[][] B) {
+        // write your code here
+        int n = A.length;
+        int m = A[0].length;
+        int g = B[0].length;
+        int[][] res = new int[n][g];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                if (A[i][j] == 0)   continue;
+                for (int k = 0; k < g; k++) {
+                    res[i][k] += A[i][j] * B[j][k];
+                }
+            }
+        }
+        return res;
+    }
+
     /* Heap O(nklogk + knlogn) 793. Intersection of Arrays */
     private class Pair {
         int row;
@@ -132,10 +150,10 @@ public class DataStuctureII {
     }
 
     /* O(nklogk) O(k) 577. Merge K Sorted Interval Lists */
-    private class Pair {
+    private class PairMerge {
         int row;
         int col;
-        public Pair(int row, int col) {
+        public PairMerge(int row, int col) {
             this.col = col;
             this.row = row;
         }
