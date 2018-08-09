@@ -10,6 +10,146 @@ public class DataStuctureII {
         }
     }
 
+    /* 931. Median of K Sorted Arrays */
+    public double findMedian(int[][] nums) {
+        // write your code here
+        int n = 0;
+        for (int[] arr: nums) {
+            n += arr.length;
+        }
+        if (n == 0) return 0;
+        if (n % 2 == 0) {
+            return findKth(nums, n / 2) / 2.0 + findKth(nums, n / 2 + 1) / 2.0;
+        }
+        return findKth(nums, n / 2 + 1);
+    }
+    private int findKth(int[][] nums, int k) {
+        int left = findMin(nums), right = findMax(nums);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (countSmallerOrEqual(nums, mid) < k) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (countSmallerOrEqual(nums, left) == k)   return left;
+        return right;
+    }
+    private int countSmallerOrEqual(int[][] nums, int num) {
+        int count = 0;
+        for (int[] arr: nums) {
+            count += countSmallerOrEqual(arr, num);
+        }
+        return count;
+    }
+    private int countSmallerOrEqual(int[] nums, int num) {
+        if (nums.length == 0)   return 0;
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] <= num) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (nums[left] > num)   return left;
+        if (nums[right] > num)  return right;
+        return nums.length;
+    }
+    private int findMin(int[][] nums) {
+        int min = 0;
+        for (int[] arr: nums) {
+            for (int n: arr) {
+                min = Math.min(min, n);
+            }
+        }
+        return min;
+    }
+    private int findMax(int[][] nums) {
+        int max = Integer.MAX_VALUE;
+        for (int[] arr: nums) {
+            for (int n: arr) {
+                max = Math.max(max, n);
+            }
+        }
+        return max;
+    }
+
+    /* O(log(m + n)) 65. Median of two Sorted Arrays */
+    public double findMedianSortedArraysII(int[] A, int[] B) {
+        int n = A.length + B.length;
+        if (n % 2 == 0) {
+            return (findKthII(A, 0, B, 0, n / 2) + findKthII(A, 0, B, 0, n / 2 + 1)) / 2.0;
+        }
+        return findKthII(A, 0, B, 0, n / 2 + 1);
+    }
+    public int findKthII(int[] A, int indexA, int[] B, int indexB, int k) {
+        if (indexA >= A.length) return B[indexB + k - 1];
+        if (indexB >= B.length) return A[indexA + k - 1];
+
+        if (k == 1) {
+            return Math.min(A[indexA + k - 1], B[indexB + k - 1]);
+        }
+        int halfKOfA = indexA + k / 2 - 1 < A.length
+                ? A[indexA + k / 2 - 1] : Integer.MAX_VALUE;
+        int halfKOfB = indexB + k / 2 - 1 < B.length
+                ? B[indexB + k / 2 - 1] : Integer.MAX_VALUE;
+
+        if (halfKOfA < halfKOfB) {
+            return findKthII(A, indexA + k / 2, B, indexB, k - k / 2);
+        }
+        return findKthII(A, indexA, B, indexB + k / 2, k - k / 2);
+    }
+
+    /* O(log(range) * (log(n) + log(m))) 65. Median of two Sorted Arrays */
+    public double findMedianSortedArrays(int[] A, int[] B) {
+        // write your code here
+        int n = A.length + B.length;
+        if (n % 2 == 0) {
+            return (findKth(A, B, n / 2) + findKth(A, B, n / 2 + 1)) / 2.0;
+        }
+        return findKth(A, B, n / 2 + 1);
+    }
+    public int findKth(int[] A, int[] B, int k) {
+        if (A.length == 0)  return B[k - 1];
+        if (B.length == 0)  return A[k - 1];
+        int left = Math.min(A[0], B[0]);
+        int right = Math.max(A[A.length - 1], B[B.length - 1]);
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (countSmallOrEqual(A, mid) + countSmallOrEqual(B, mid) < k) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (countSmallOrEqual(A, left) + countSmallOrEqual(B, left) >= k) {
+            return left;
+        }
+        else
+            return right;
+    }
+    public int countSmallOrEqual(int[] arr, int num) {
+        int left = 0, right = arr.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (arr[mid] <= num) {
+                left = mid;
+            }
+            else {
+                right = mid;
+            }
+        }
+        if (arr[left] > num)   return left;
+        if (arr[right] > num)   return right;
+        return arr.length;
+    }
+
     /* 654. Sparse Matrix Multiplication */
     public int[][] multiply(int[][] A, int[][] B) {
         // write your code here
