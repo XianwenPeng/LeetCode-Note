@@ -17,6 +17,30 @@ public class Mockup {
         System.out.println(mu.boundaryOfBinaryTree(root));
     }
 
+    /* 8.11-05 2. 李寇易思玲 + BQ. From 1point 3acres bbs */
+    public List<String> wordBreak(String s, List<String> wordDict) {
+        Map<String, List<String>> map = new HashMap<>();
+        return dfs(s, new HashSet<>(wordDict), map);
+    }
+    private List<String> dfs(String s, Set<String> dict, Map<String, List<String>> map) {
+        if (map.containsKey(s)) return map.get(s);
+        List<String> res = new LinkedList<>();
+        if (dict.contains(s)) {
+            res.add(s);
+        }
+        for (int i = 0; i < s.length(); i++) {
+            String pre = s.substring(0, i + 1);
+            String post = s.substring(i + 1);
+            if (!dict.contains(pre))    continue;
+            List<String> temp = dfs(post, dict, map);
+            for (String str: temp) {
+                res.add(pre + " " + str);
+            }
+        }
+        map.put(s, res);
+        return res;
+    }
+
     /* 8.11-04 1. 利口留其舞 + BQ 675. Cut Off Trees for Golf Event BFS */
     public int cutOffTree(List<List<Integer>> forest) {
         Queue<int[]> pq = new PriorityQueue<>((a1, a2) -> {
