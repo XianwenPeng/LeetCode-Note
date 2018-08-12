@@ -117,8 +117,7 @@ public class Mockup {
         public LFUCache(int capacity) {
             countToList = new HashMap<>();
             keyToNode = new HashMap<>();
-            minCount = 0;
-            countToList.put(0, new NodeList());
+            minCount = -1;
             this.capacity = capacity;
         }
 
@@ -126,51 +125,44 @@ public class Mockup {
             if (!keyToNode.containsKey(key))    return -1;
             Node node = keyToNode.get(key);
             int res = node.val;
-
-            NodeList list = countToList.get(node.count);
-            list.removeNode(node);
-            if (list.size == 0) {
-                if (minCount == node.count) minCount++;
-                countToList.remove(node.count);
-            }
+            removeNode(node);
             node.count++;
-            if (!countToList.containsKey(node.count)) {
-                countToList.put(node.count, new NodeList());
-            }
-            countToList.get(node.count).addToHead(node);
+            addNode(node);
             return res;
         }
 
         public void put(int key, int value) {
+            if (capacity == 0)  return;
             if (keyToNode.containsKey(key)) {
                 Node node = keyToNode.get(key);
-                node.val = value;
-
-                NodeList list = countToList.get(node.count);
-                list.removeNode(node);
-                if (list.size == 0) {
-                    if (minCount == node.count) minCount++;
-                    countToList.remove(node.count);
-                }
+                removeNode(node);
                 node.count++;
-                if (!countToList.containsKey(node.count)) {
-                    countToList.put(node.count, new NodeList());
-                }
-                countToList.get(node.count).addToHead(node);
+                node.val = value;
+                addNode(node);
                 return;
             }
             Node node = new Node(key, value);
             node.count = 0;
             if (keyToNode.size() == capacity) {
-                NodeList lastList = countToList.get(minCount);
-                Node removeNode = lastList.tail.prev;
-                lastList.removeNode(removeNode);
-                if (lastList.size == 0) countToList.remove(removeNode.count);
+                removeNode(countToList.get(minCount).tail.prev);
             }
-            
+            minCount = node.count;
+            addNode(node);
         }
-
-
+        public void addNode(Node node) {
+            if (!countToList.containsKey(node.count))
+                countToList.put(node.count, new NodeList());
+            countToList.get(node.count).addToHead(node);
+            keyToNode.put(node.key, node);
+        }
+        public void removeNode(Node node) {
+            countToList.get(node.count).removeNode(node);
+            if (countToList.get(node.count).size == 0) {
+                countToList.remove(node.count);
+                minCount += minCount == node.count ? 1 : 0;
+            }
+            keyToNode.remove(node.key);
+        }
     }
 
 
