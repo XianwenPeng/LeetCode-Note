@@ -17,6 +17,55 @@ public class Mockup {
         System.out.println(mu.boundaryOfBinaryTree(root));
     }
 
+    /* 8.11-04 1. 利口留其舞 + BQ 675. Cut Off Trees for Golf Event BFS */
+    public int cutOffTree(List<List<Integer>> forest) {
+        Queue<int[]> pq = new PriorityQueue<>((a1, a2) -> {
+            return a1[2] - a2[2];
+        });
+        for (int i = 0; i < forest.size(); i++) {
+            for (int j = 0; j < forest.get(i).size(); j++) {
+                if (forest.get(i).get(j) > 1)
+                    pq.offer(new int[] {i, j, forest.get(i).get(j)});
+            }
+        }
+        int[] start = new int[2];
+        int sumStep = 0;
+        while (!pq.isEmpty()) {
+            int[] target = pq.poll();
+            int step = stepToLowestTree(forest, start, target);
+            if (step == -1) return -1;
+            sumStep += step;
+            start[0] = target[0];
+            start[1] = target[1];
+            // System.out.println(step);
+        }
+        return sumStep;
+    }
+    int[][] dirs = {{0, 1}, {0, -1}, {1, 0}, {-1, 0}};
+    private int stepToLowestTree(List<List<Integer>> forest, int[] start, int[] target) {
+        Queue<int[]> queue = new LinkedList<>();
+        boolean[][] visited = new boolean[forest.size()][forest.get(0).size()];
+        queue.offer(start);
+        int step = 0;
+        while (!queue.isEmpty()) {
+            int size = queue.size();
+            for (int i = 0; i < size; i++) {
+                int[] cur = queue.poll();
+                if (cur[0] == target[0] && cur[1] == target[1]) return step;
+                for (int j = 0; j < dirs.length; j++) {
+                    int row = cur[0] + dirs[j][0];
+                    int col = cur[1] + dirs[j][1];
+                    if (row < 0 || row >= forest.size() || col < 0 || col >= forest.get(row).size()
+                            || forest.get(row).get(col) == 0 || visited[row][col])  continue;
+                    queue.offer(new int[] {row, col});
+                    visited[row][col] = true;
+                }
+            }
+            step++;
+        }
+        return -1;
+    }
+
     /* 8.11-03 R5 另外一个 hiring manager不知道是不是bar raiser, behavior + 给一颗二叉树，逆时针打印所有边缘Node. 乐扣上原题。 */
     public List<Integer> boundaryOfBinaryTree(TreeNode root) {
         // write your code here
