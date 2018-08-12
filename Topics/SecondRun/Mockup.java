@@ -12,6 +12,40 @@ public class Mockup {
         System.out.println("\n8.11-01 给一颗balanced binary search tree, 找2sum的 pair");
         System.out.println(Arrays.toString(mu.findTwoSumInTree(root, 4)));
         System.out.println(mu.findAllTwoSumPairsInTree(root, 8));
+
+        System.out.println("\n8.11-03 R5 另外一个 hiring manager不知道是不是bar raiser, behavior + 给一颗二叉树，逆时针打印所有边缘Node");
+        System.out.println(mu.boundaryOfBinaryTree(root));
+    }
+
+    /* 8.11-03 R5 另外一个 hiring manager不知道是不是bar raiser, behavior + 给一颗二叉树，逆时针打印所有边缘Node. 乐扣上原题。 */
+    public List<Integer> boundaryOfBinaryTree(TreeNode root) {
+        // write your code here
+        List<Integer> res = new LinkedList<>();
+        if (root == null)   return res;
+        res.add(root.val);
+        printLeft(root.left, res);
+        printBottom(root.left, res);
+        printBottom(root.right, res);
+        printRight(root.right, res);
+        return res;
+    }
+    private void printLeft(TreeNode root, List<Integer> res) {
+        if (root == null || root.left == null && root.right == null)    return;
+        res.add(root.val);
+        if (root.left == null)  printLeft(root.right, res);
+        else    printLeft(root.left, res);
+    }
+    private void printRight(TreeNode root, List<Integer> res) {
+        if (root == null || root.left == null && root.right == null)    return;
+        if (root.right == null)  printRight(root.left, res);
+        else    printRight(root.right, res);
+        res.add(root.val);
+    }
+    private void printBottom(TreeNode root, List<Integer> res) {
+        if (root == null)    return;
+        if (root.left == null && root.right == null)    res.add(root.val);
+        printBottom(root.left, res);
+        printBottom(root.right, res);
     }
 
     /* 8.11-02 R3 天竺小哥， 以前的project + LRU cache, 他一直理解不来put是怎么回事，他觉得只有get不到才put。
