@@ -76,6 +76,103 @@ public class Mockup {
         }
     }
 
+    /* LFU Cache */
+    class LFUCache {
+        private class Node {
+            int key;
+            int val;
+            int count;
+            Node prev, next;
+            public Node(int key, int val) {
+                this.key = key;
+                this.val = val;
+                count = 0;
+            }
+        }
+        private class NodeList {
+            Node head, tail;
+            int size;
+            public NodeList() {
+                head = new Node(-1, -1);
+                tail = new Node(-1, -1);
+                head.next = tail;
+                size = 0;
+            }
+            public void removeNode(Node node) {
+                node.next.prev = node.prev;
+                node.prev.next = node.next;
+                size--;
+            }
+            public void addToHead(Node node) {
+                node.next = head.next;
+                node.prev = head;
+                head.next.prev = node;
+                head.next = node;
+                size++;
+            }
+        }
+        Map<Integer, NodeList> countToList;
+        Map<Integer, Node> keyToNode;
+        int minCount, capacity;
+        public LFUCache(int capacity) {
+            countToList = new HashMap<>();
+            keyToNode = new HashMap<>();
+            minCount = 0;
+            countToList.put(0, new NodeList());
+            this.capacity = capacity;
+        }
+
+        public int get(int key) {
+            if (!keyToNode.containsKey(key))    return -1;
+            Node node = keyToNode.get(key);
+            int res = node.val;
+
+            NodeList list = countToList.get(node.count);
+            list.removeNode(node);
+            if (list.size == 0) {
+                if (minCount == node.count) minCount++;
+                countToList.remove(node.count);
+            }
+            node.count++;
+            if (!countToList.containsKey(node.count)) {
+                countToList.put(node.count, new NodeList());
+            }
+            countToList.get(node.count).addToHead(node);
+            return res;
+        }
+
+        public void put(int key, int value) {
+            if (keyToNode.containsKey(key)) {
+                Node node = keyToNode.get(key);
+                node.val = value;
+
+                NodeList list = countToList.get(node.count);
+                list.removeNode(node);
+                if (list.size == 0) {
+                    if (minCount == node.count) minCount++;
+                    countToList.remove(node.count);
+                }
+                node.count++;
+                if (!countToList.containsKey(node.count)) {
+                    countToList.put(node.count, new NodeList());
+                }
+                countToList.get(node.count).addToHead(node);
+                return;
+            }
+            Node node = new Node(key, value);
+            node.count = 0;
+            if (keyToNode.size() == capacity) {
+                NodeList lastList = countToList.get(minCount);
+                Node removeNode = lastList.tail.prev;
+                lastList.removeNode(removeNode);
+                if (lastList.size == 0) countToList.remove(removeNode.count);
+            }
+            
+        }
+
+
+    }
+
 
     /* Follow up: Output all 2 sum pairs
         8.11-01 给一颗balanced binary search tree, 找2sum的 pair
