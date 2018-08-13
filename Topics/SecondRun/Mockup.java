@@ -15,6 +15,70 @@ public class Mockup {
 
         System.out.println("\n8.11-03 R5 另外一个 hiring manager不知道是不是bar raiser, behavior + 给一颗二叉树，逆时针打印所有边缘Node");
         System.out.println(mu.boundaryOfBinaryTree(root));
+
+        System.out.println("\n8.11-02 2. BQ + 实现一个findKnearest Uber driver的method。这一轮数据结构问的很细。我用priorityQ做的。（这一轮也秒了）");
+        List<UberDriver> drivers = mu.buildDrivers("0 0 1 1 0 2 1 0");
+        for (UberDriver ub: mu.findNearestUberDriver(drivers, 3, 0, 0)) {
+            System.out.print("{"+ub.x +", " + ub.y +"} ");
+        }
+
+    }
+
+    /* 8.11-02 2. BQ + 实现一个findKnearest Uber driver的method。这一轮数据结构问的很细。我用priorityQ做的。（这一轮也秒了）*/
+    public class UberDriver {
+        int x;
+        int y;
+        public UberDriver(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+    }
+    public List<UberDriver> findNearestUberDriver(List<UberDriver> drivers, int k, int x, int y) {
+        Queue<UberDriver> pq = new PriorityQueue<>((d1, d2) -> {
+            return distanceBetween(d1.x, x, d1.y, y) - distanceBetween(d2.x, x, d2.y, y) <= 0 ? 1 : -1;
+        });
+        for (UberDriver driver: drivers) {
+            if (pq.size() < k) {
+                pq.offer(driver);
+            }
+            else {
+                if (distanceBetween(driver.x, x, driver.y, y) < distanceBetween(pq.peek().x, x, pq.peek().y, y)) {
+                    pq.poll();
+                    pq.offer(driver);
+                }
+            }
+        }
+        return new LinkedList<>(pq);
+    }
+    private double distanceBetween(int x1, int x2, int y1, int y2) {
+        return Math.sqrt((x1 - x2) * (x1 - x2) + (y1 - y2) * (y1 - y2));
+    }
+    private List<UberDriver> buildDrivers(String str) {
+        List<UberDriver> res = new LinkedList<>();
+        String[] pos = str.split(" ");
+        for (int i = 0; i < pos.length; i+=2) {
+            res.add(new UberDriver(Integer.parseInt(pos[i]), Integer.parseInt(pos[i + 1])));
+        }
+        return res;
+    }
+
+    /* 8.12-01 4. 里抠而亦柳 + BQ 216. Combination Sum III */
+    public List<List<Integer>> combinationSum3(int k, int n) {
+        List<List<Integer>> res = new LinkedList<>();
+        dfs(k, n, 1, res, new LinkedList<>());
+        return res;
+    }
+    public void dfs(int k, int n, int start, List<List<Integer>> res, List<Integer> list) {
+        if (n < 0 || k < 0) return;
+        if (k == 0 && n == 0) {
+            res.add(new LinkedList<>(list));
+            return;
+        }
+        for (int i = start; i <= 9; i++) {
+            list.add(i);
+            dfs(k - 1, n - i, i + 1, res, list);
+            list.remove(list.size() - 1);
+        }
     }
 
     /* 8.11-05 2. 李寇易思玲 + BQ. From 1point 3acres bbs */
