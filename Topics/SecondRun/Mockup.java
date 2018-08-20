@@ -3,6 +3,11 @@ package LeetCode.Topics.SecondRun;
 import java.util.*;
 
 public class Mockup {
+    public class TreeLinkNode {
+        int val;
+        TreeLinkNode left, right, next;
+        TreeLinkNode(int x) { val = x; }
+    }
     public static void main(String[] args) {
         Mockup mu = new Mockup();
         /* 8.11-01 */
@@ -22,7 +27,48 @@ public class Mockup {
             System.out.print("{"+ub.x +", " + ub.y +"} ");
         }
 
+        System.out.println("\n8.18-03 第三轮 BQ + 找图中两点 是否联通，union find 秒");
+        int[][] edges = {{0, 1}, {1, 2}, {2, 3}, {1, 3}, {1, 4}, {5, 6}};
+        System.out.print(mu.connectedInGraph(edges, 1, 5));
+
     }
+
+    /* 8.19-04 白人小哥+白人大叔，小哥主问，大叔感觉是负责写评价，全程除了最后any question for us环节没有说话。
+    BQ是讲述一个你对自己的想法和思路和自信，但最终输掉了和同事的争论的事例。coding是leetcode 117，我一开始给了BFS解法，
+    follow up是用constant空间复杂度解，我用了iterative方法； */
+    public void connect(TreeLinkNode root) {
+        while (root != null) {
+            TreeLinkNode head = new TreeLinkNode(-1), end = head;
+            while (root != null) {
+                if (root.left != null) {
+                    end.next = root.left;
+                    end = root.left;
+                }
+                if (root.right != null) {
+                    end.next = root.right;
+                    end = root.right;
+                }
+                root = root.next;
+            }
+            root = head.next;
+        }
+    }
+
+    /* 8.18-03 第三轮 BQ + 找图中两点 是否联通，union find 秒 */
+    public boolean connectedInGraph(int[][] edges, int node1, int node2) {
+        Map<Integer, Integer> map = new HashMap<>();
+        for (int[] edge: edges) {
+            int son = find(map, edge[0]);
+            int parent = find(map, edge[1]);
+            map.put(son, parent);
+        }
+        return find(map, node1) == find(map, node2);
+    }
+    public int find(Map<Integer, Integer> map, int node) {
+        if (!map.containsKey(node)) map.put(node, node);
+        return map.get(node) == node ? node : find(map, map.get(node));
+    }
+
 
     /* 8.11-02 2. BQ + 实现一个findKnearest Uber driver的method。这一轮数据结构问的很细。我用priorityQ做的。（这一轮也秒了）*/
     public class UberDriver {

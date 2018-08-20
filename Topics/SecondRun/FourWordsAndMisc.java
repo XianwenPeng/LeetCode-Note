@@ -10,6 +10,49 @@ public class FourWordsAndMisc {
         System.out.println(fw.findLadders("hit", "cog", new HashSet<>(Arrays.asList(words))));
     }
 
+    /* 322. Coin Change */
+    public int coinChange(int[] coins, int amount) {
+        int[] dp = new int[amount + 1];
+        for (int i = 1; i <= amount; i++) {
+            dp[i] = Integer.MAX_VALUE;
+            for (int coin: coins) {
+                if (i - coin >= 0 && dp[i - coin] >= 0) {
+                    dp[i] = Math.min(dp[i], dp[i - coin]);
+                }
+            }
+            dp[i] = dp[i] == Integer.MAX_VALUE ? -1 : dp[i] + 1;
+        }
+        return dp[amount];
+    }
+
+    /* 33. Search in Rotated Sorted Array */
+    public int search(int[] nums, int target) {
+        if (nums.length == 0)   return -1;
+        int left = 0, right = nums.length - 1;
+        while (left + 1 < right) {
+            int mid = left + (right - left) / 2;
+            if (nums[mid] < nums[right]) {
+                if (target > nums[mid] && target <= nums[right]) {
+                    left = mid;
+                }
+                else {
+                    right = mid;
+                }
+            }
+            else {
+                if (target < nums[mid] && target >= nums[left]) {
+                    right = mid;
+                }
+                else {
+                    left = mid;
+                }
+            }
+        }
+        if (nums[left] == target)   return left;
+        else if (nums[right] == target)  return right;
+        return -1;
+    }
+
     /* 829. Word Pattern II */
     public boolean wordPatternMatch(String pattern, String str) {
         return dfs(pattern, str, 0, 0, new HashMap<>(), new HashSet<>());
