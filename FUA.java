@@ -31,7 +31,39 @@ public class FUA {
         int[] dest = {4,4};
         int[][] maze = {{0,0,1,0,0},{0,0,0,0,0},{0,0,0,1,0},{1,1,0,1,1},{0,0,0,0,0}};
         System.out.println(fua.hasPathBFS(maze, start, dest));
+
+        /* Full stack 2nd phone interview*/
+        int[] arr = {3,8,8};
+        System.out.println(fua.divideSubset(arr));
     }
+
+    /* Full stack 2nd phone interview*/
+    public int divideSubset(int[] w) {
+        if (w == null || w.length == 0)	return -1;
+        if (w.length == 1)	return w[0] * 2;
+        int min = w[0], max = w[w.length - 1];
+        for (int j = max + 1; j <= max + min; j++) {
+            Set<Integer> rems = new HashSet<>();
+            for (int i = 0; i < w.length; i++) {
+                rems.add(w[i] % j);
+                if (helper(rems, w[i], j))	return j;
+            }
+        }
+        return -1;
+    }
+    public boolean helper(Set<Integer> rems, int curNum, int j) {
+        Set<Integer> newRem = new HashSet<>(rems);
+        for (int num: rems) {
+            int rem = (num + curNum) % j;
+            newRem.add(rem);
+            if (rem == 0) {
+                return true;
+            }
+        }
+        rems = newRem;
+        return false;
+    }
+
 
     /* 49. Group Anagrams */
     // O (N * k log k) k 是每一个string的最大长度

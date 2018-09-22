@@ -10,6 +10,98 @@ public class DataStuctureII {
         }
     }
 
+    /* 840. Range Sum Query - Mutable */
+    class NumArray {
+        int[] bit, nums;
+        public NumArray(int[] nums) {
+            int len = nums.length + 1;
+            bit = new int[len];
+            this.nums = new int[len - 1];
+            for (int i = 0; i < len - 1; i++) {
+                update(i, nums[i]);
+            }
+
+        }
+
+        public void update(int i, int val) {
+            int diff = val - nums[i];
+            nums[i] = val;
+            for (int j = i + 1; j < bit.length; j += (j & (-j))) {
+                bit[j] += diff;
+                System.out.println(i+" "+val+" "+Arrays.toString(bit));
+            }
+        }
+
+        public int sumRange(int i, int j) {
+            return sum(j) - sum(i - 1);
+        }
+
+        public int sum(int n) {
+            int ans = 0;
+            for (int i = n + 1; i > 0; i -= (i & (-i))) {
+                ans += bit[i];
+            }
+            return ans;
+        }
+    }
+
+    /* 41. Maximum Subarray */
+    public int maxSubArray(int[] nums) {
+        // write your code here
+        int[] dp = new int[nums.length + 1];
+        int max = Integer.MIN_VALUE;
+        for (int i = 1; i <= nums.length; i++) {
+            dp[i] = Math.max(dp[i - 1] + nums[i - 1], nums[i - 1]);
+            max = Math.max(max, dp[i]);
+        }
+        return max;
+    }
+
+    /* 944. Maximum Submatrix */
+    public int maxSubmatrix(int[][] matrix) {
+        // write your code here
+        if (matrix.length == 0 || matrix[0].length == 0)   return 0;
+        int m = matrix.length, n = matrix[0].length;
+        int[][] dp = new int[m + 1][n + 1];
+        for (int i = 1; i <= m; i++) {
+            for (int j = 1; j <= n; j++) {
+                dp[i][j] = dp[i - 1][j] + matrix[i - 1][j - 1];
+            }
+        }
+        for (int[] arr: dp) System.out.println(Arrays.toString(arr));
+        int max = 0;
+        for (int i = 0; i < m; i++) {
+            for (int j = i + 1; j <= m; j++) {
+                int sum = 0;
+                for (int k = 1; k <= n; k++) {
+                    sum += (dp[j][k] - dp[i][k]);
+                    max = Math.max(max, sum);
+                    sum = Math.max(0, sum);
+                }
+            }
+        }
+        return max;
+    }
+
+    /* 138. Subarray Sum */
+    public List<Integer> subarraySum(int[] nums) {
+        // write your code here
+        List<Integer> res = new LinkedList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        map.put(0, -1);
+        int sum = 0;
+        for (int i = 0; i < nums.length; i++) {
+            sum += nums[i];
+            if (map.containsKey(sum)) {
+                res.add(i);
+                res.add(map.get(sum) + 1);
+                return res;
+            }
+            map.put(sum, i);
+        }
+        return res;
+    }
+
     /* 931. Median of K Sorted Arrays */
     public double findMedian(int[][] nums) {
         // write your code here

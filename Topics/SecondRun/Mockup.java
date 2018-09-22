@@ -33,6 +33,28 @@ public class Mockup {
 
     }
 
+    /* 8.20-01 801. Minimum Swaps To Make Sequences Increasing */
+    public int minSwap(int[] A, int[] B) {
+        int[] dp = {0, 1};  // 0 not swap, 1 swap
+        for (int i = 1; i < A.length; i++) {
+            int[] cur = new int[2];
+            if (A[i] > A[i - 1] && A[i] > B[i - 1] && B[i] > B[i - 1] && B[i] > A[i - 1]) {
+                cur[0] = Math.min(dp[0], dp[1]);
+                cur[1] = Math.min(dp[0], dp[1]) + 1;
+            }
+            else if (A[i] > A[i - 1] && B[i] > B[i - 1]) {
+                cur[0] = dp[0];
+                cur[1] = dp[1] + 1;
+            }
+            else {
+                cur[0] = dp[1];
+                cur[1] = dp[0] + 1;
+            }
+            dp = cur;
+        }
+        return Math.min(dp[0], dp[1]);
+    }
+
     /* 8.19-04 白人小哥+白人大叔，小哥主问，大叔感觉是负责写评价，全程除了最后any question for us环节没有说话。
     BQ是讲述一个你对自己的想法和思路和自信，但最终输掉了和同事的争论的事例。coding是leetcode 117，我一开始给了BFS解法，
     follow up是用constant空间复杂度解，我用了iterative方法； */
