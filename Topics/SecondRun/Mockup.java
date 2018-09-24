@@ -29,8 +29,40 @@ public class Mockup {
 
         System.out.println("\n8.18-03 第三轮 BQ + 找图中两点 是否联通，union find 秒");
         int[][] edges = {{0, 1}, {1, 2}, {2, 3}, {1, 3}, {1, 4}, {5, 6}};
-        System.out.print(mu.connectedInGraph(edges, 1, 5));
+        System.out.println(mu.connectedInGraph(edges, 1, 5));
 
+        List<String> list = Arrays.asList("MyJavaClass", "MyJava", "MClass", "classMy", "class");
+        String test = "Mav";
+        System.out.println(test +" " + mu.searchResults(list, test));
+    }
+
+    // 9/23 FLAG Mock up Google
+    public List<String> searchResults(List<String> list, String pattern) {
+        List<String> res = new LinkedList<>(list);
+        HashMap<String, Integer> map = new HashMap<>();
+        for (String str: res) map.put(str, 0);
+        for (int i = 0; i < pattern.length(); i++) {
+            List<String> temp = new LinkedList<>(res);
+            res.clear();
+            for (int j = 0; j < temp.size(); j++) {
+                int index = isSubsequent(temp.get(j), map.get(temp.get(j)), pattern.charAt(i));
+                if (index >= 0) {
+                    map.put(temp.get(j), index + 1);
+                    res.add(temp.get(j));
+                }
+            }
+            System.out.println(pattern.charAt(i) + " "+res);
+        }
+        return res;
+    }
+    public int isSubsequent(String str, int indexS, char pattern) {
+        if (str.indexOf(pattern) == -1) return -1;
+        for (int i = indexS; i < str.length(); i++) {
+            if (str.charAt(i) == pattern) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     /* 8.20-01 801. Minimum Swaps To Make Sequences Increasing */
